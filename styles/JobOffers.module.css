@@ -1,0 +1,153 @@
+/* Main container */
+.container {
+  display: flex;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  gap: 20px; /* Added gap between sidebar and offers section */
+}
+
+/* Sidebar */
+.sidebar {
+  flex: 0 0 250px;
+  background: #f9f9f9;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar h2 {
+  font-size: 1.5rem;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.filterButton {
+  display: block;
+  width: 100%;
+  padding: 10px 15px;
+  font-size: 1rem;
+  margin-bottom: 10px;
+  border: 1px solid #0070f3;
+  background: #fff;
+  color: #0070f3;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.filterButton:hover {
+  background: #0070f3;
+  color: #fff;
+}
+
+.active {
+  background: #0070f3;
+  color: #fff;
+  font-weight: bold;
+}
+
+/* Offers section */
+.offers {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Offer card (full width) */
+.offerCard {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.offerCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.cardTitle {
+  font-size: 1.5rem;
+  color: #0070f3;
+  margin-bottom: 5px;
+}
+
+.cardDescription {
+  font-size: 1rem;
+  color: #555;
+  margin-bottom: 5px;
+}
+
+.cardExpiry {
+  font-size: 0.7rem;
+  color: #888;
+}
+
+/* Pagination */
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.pageButton {
+  padding: 10px 15px;
+  border: 1px solid #0070f3;
+  background: #fff;
+  color: #0070f3;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.pageButton:hover {
+  background: #0070f3;
+  color: #fff;
+}
+
+.pageButton:disabled {
+  background: #f1f1f1;
+  color: #ccc;
+  cursor: not-allowed;
+}
+
+.pageButton.active {
+  background: #0070f3;
+  color: #fff;
+  font-weight: bold;
+}
+
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column; /* Switch to column layout */
+  }
+
+  .sidebar {
+    flex: 0 0 100%; /* Full width for mobile */
+    margin-right: 0; /* Remove right margin for mobile */
+    margin-bottom: 20px; /* Add bottom margin for spacing */
+  }
+
+  .sidebarbutton {
+    display: flex;
+    gap: 5px;
+  }
+
+  .offers {
+    gap: 15px; /* Slightly smaller gap for mobile */
+  }
+
+  .pagination {
+    gap: 5px;
+    align-items: center;
+  }
+  .pageButton {
+    padding: 10px 15px;
+    font-size: 10px;
+  }
+}
