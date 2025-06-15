@@ -13,7 +13,7 @@ const Programme: React.FC<FeedBackProps> = ({ content, title, name, img }) => {
   };
 
   return (
-    <div className="flex justify-between flex-col px-2 py-12 rounded-[20px] xs:max-w-[30%] w-[100%] md:mr-10 sm:mr-5 mr-0 cursor-pointer backdrop-blur-md bg-white/40 border border-white/20 shadow-lg transition-all duration-300 hover:bg-green-200/30">
+    <div className="flex justify-between flex-col px-2 py-12 rounded-[10px] xs:max-w-[29%] w-[100%] md:mr-10 lg:mb-10 sm:mr-5 mr-0 cursor-pointer backdrop-blur-md bg-white/40 border border-white/20 shadow-lg transition-all duration-300 hover:bg-green-200/30">
       <Image
         src={img}
         alt={name}
