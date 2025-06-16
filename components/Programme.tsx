@@ -13,21 +13,21 @@ const Programme: React.FC<FeedBackProps> = ({ content, title, name, img }) => {
   };
 
   return (
-    <div className="flex justify-between flex-col px-2 py-12 rounded-[10px] xs:max-w-[29%] w-[100%] md:mr-10 lg:mb-10 sm:mr-5 mr-0 cursor-pointer backdrop-blur-md bg-white/40 border border-white/20 shadow-lg transition-all duration-300 hover:bg-green-200/30">
+    <div className="flex justify-between flex-col px-4 py-8 rounded-[10px] w-full md:w-[calc(33.333%-1rem)] lg:w-[calc(33.333%-1.5rem)] cursor-pointer backdrop-blur-md bg-white/40 border border-white/20 shadow-lg transition-all duration-300 hover:bg-green-200/30">
       <Image
         src={img}
         alt={name}
-        className="rounded-[5px] object-cover object-center"
+        className="rounded-[5px] object-cover object-center w-full h-[200px]"
         width={480}
         height={480}
       />
-      <h2 className="text-xl text-black font-bold mb-4">{title}</h2>
+      <h2 className="text-xl text-black font-bold mb-4 mt-4">{title}</h2>
       <p className="font-poppins font-normal text-[12px] leading-[22px] text-black my-1">
-        {truncateText(content, 150)}{" "}
+        {truncateText(content, 150)}
       </p>
       <button
         onClick={() => setShowPopup(true)} // Show popup on click
-        className="px-6 py-2 bg-gradient-to-r from-green-400 via-blue-500 to-purple-600 text-white font-poppins font-medium rounded-lg hover:opacity-90 shadow-lg transition-all duration-300 ease-in-out"
+        className="px-6 py-2 bg-gradient-to-r from-green-400 via-blue-500 to-purple-600 text-white font-poppins font-medium rounded-lg hover:opacity-90 shadow-lg transition-all duration-300 ease-in-out mt-4"
       >
         Afficher plus
       </button>

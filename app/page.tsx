@@ -5,6 +5,9 @@ import Contact from "@components/Contact";
 import Partenaire from "@components/Partenaire";
 import Theprograms from "@components/Theprograms";
 import TheOdd from "@components/TheOdd";
+import AboutUs from "@components/AboutUs";
+import ProjectHighlight from "@components/ProjectHighlight";
+
 const Home: React.FC = () => {
   return (
     <>
@@ -19,6 +22,16 @@ const Home: React.FC = () => {
             <Stats />
           </div>
         </div>
+        <div className={`bg-white ${styles.paddingX} ${styles.flexStart}`}>
+          <div className={`${styles.boxWidth}`}>
+            <AboutUs />
+          </div>
+        </div>
+        <div className={`bg-green-50 ${styles.paddingX} ${styles.flexStart}`}>
+          <div className={`${styles.boxWidth}`}>
+            <ProjectHighlight />
+          </div>
+        </div>
         <div className={`bg-slate-700 ${styles.paddingX} ${styles.flexStart}`}>
           <div className={`${styles.boxWidth}`}>
             <Business />
@@ -29,7 +42,7 @@ const Home: React.FC = () => {
             <TheOdd />
           </div>
         </div>
-        <div
+        {/* <div
           className={`bg-slate-400 ${styles.paddingX} ${styles.flexStart}`}
           style={{
             background: "linear-gradient(to bottom, white, slategray)",
@@ -37,8 +50,8 @@ const Home: React.FC = () => {
         >
           <div className={`${styles.boxWidth}`}>
             <CardDeal />
-          </div>
-        </div>
+          </div> */}
+        {/* </div> */}
         <div
           className={`bg-teal-900 ${styles.paddingX} ${styles.flexStart} bg-[url('/assets/bg1.jpg')] bg-cover bg-center `}
         >
@@ -48,7 +61,6 @@ const Home: React.FC = () => {
         </div>
         <div className={`bg-white ${styles.paddingX} ${styles.flexStart}`}>
           <div className={`${styles.boxWidth}`}>
-            {/* <CardDeal /> */}
             <Partenaire />
           </div>
         </div>
@@ -56,8 +68,6 @@ const Home: React.FC = () => {
           className={`bg-primary ${styles.paddingX} ${styles.flexStart} bg-[url('/assets/bg4.jpg')] bg-cover bg-center `}
         >
           <div className={`${styles.boxWidth}`}>
-            {/* <CardDeal /> */}
-
             <Contact />
           </div>
         </div>

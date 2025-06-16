@@ -137,25 +137,20 @@ export const footerLinks = [
     title: "Liens Utiles",
     links: [
       {
-        name: "Content",
-        link: "https://www.hoobank.com/content/",
-      },
-
-      {
-        name: "ODD et co-bénéfices",
-        link: "https://www.hoobank.com/create/",
+        name: "Accueil",
+        link: "/",
       },
       {
-        name: "Faits et chiffres",
-        link: "https://www.hoobank.com/explore/",
+        name: "Qui sommes-nous",
+        link: "#about",
       },
       {
-        name: "Partenaires",
-        link: "https://www.hoobank.com/terms-and-services/",
+        name: "Projets",
+        link: "#projects",
       },
       {
         name: "Contact",
-        link: "https://www.hoobank.com/terms-and-services/",
+        link: "#contact",
       },
     ],
   },
@@ -164,17 +159,16 @@ export const footerLinks = [
     title: "Programme",
     links: [
       {
-        name: "Makala → ecomakala",
-        link: "https://www.hoobank.com/help-center/",
-      },
-
-      {
-        name: "Efficacité énergétique / Reboisement",
-        link: "https://www.hoobank.com/partners/",
+        name: "Gouvernance locale",
+        link: "#",
       },
       {
-        name: "Préserver : Reboisement",
-        link: "https://www.hoobank.com/suggestions/",
+        name: "Droits humains",
+        link: "#",
+      },
+      {
+        name: "Gestion des ressources",
+        link: "#",
       },
     ],
   },
@@ -183,20 +177,16 @@ export const footerLinks = [
     title: "Contact",
     links: [
       {
-        name: "+243 994 261 583",
-        link: "",
+        name: "girenadsabl@gmail.com",
+        link: "mailto:girenadsabl@gmail.com",
       },
       {
-        name: "+243 998 054 815",
-        link: "",
+        name: "www.girenad.org",
+        link: "https://www.girenad.org",
       },
       {
-        name: "contact@ugpcarbonenk.cd",
-        link: "mailto:contact@ugpcarbonenk.cd",
-      },
-      {
-        name: " Goma,Nord-Kivu, RDC",
-        link: "",
+        name: "RDC",
+        link: "#",
       },
     ],
   },

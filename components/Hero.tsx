@@ -4,6 +4,7 @@ import { discount, robot } from "@/public/assets";
 
 import GetStarted from "./GetStarted";
 import Image from "next/image";
+import Button from "./Button";
 
 const Hero: React.FC = () => (
   <section
@@ -13,25 +14,26 @@ const Hero: React.FC = () => (
     <div
       className={`flex-1 ${styles.flexStart} flex-col xl:px-0 sm:px-16 px-6`}
     >
-      <div className=" flex flex-row items-center py-[6px] px-4 bg-slate-900 rounded-[10px] mb-2">
+      <div className="flex flex-row items-center py-[6px] px-4 bg-slate-900 rounded-[10px] mb-2 w-full">
         <p
-          className={`font-poppins font-normal text-dimWhite sm:text-[12px] text-[10px] leading-[30.8px] ml-2`}
+          className={`font-poppins font-normal text-dimWhite sm:text-[11px] text-[9px] leading-[30.8px] ml-2 md:whitespace-nowrap`}
         >
           <span className="">
-            Énergie durable, lutte contre la pauvreté et protection des forêts
-            des Virunga au Nord-Kivu (RDC).
+            Groupe d'Appui à la Gestion Intégrée des Ressources Naturelles pour
+            les Droits Humains et le Développement Durable
           </span>
         </p>
       </div>
       <div className="flex flex-row justify-between items-center w-full">
         <h1 className="flex-1 font-poppins font-semibold ss:text-[40px] text-[45px] ss:leading-[65px] leading-[75px]">
-          PROTECTION DU
-          <span className="text-gradient"> CLIMAT</span>{" "}
+          Nous accompagnons les communautés locales et les entités territoriales
+          dans une gouvernance équitable, inclusive et durable.
         </h1>
       </div>
-      <h1 className="w-full font-poppins font-semibold ss:text-[40px] text-[40px]  ss:leading-[65px] leading-[60px]">
-        PAR LE REBOISEMENT ET L'EFFICACITÉ ÉNERGÉTIQUE
-      </h1>
+
+      {/* <div className="mt-8">
+        <Button styles="mt-5" text="En savoir plus" />
+      </div> */}
     </div>
     <div className={`${styles.flexCenter} flex-1 flex md:my-0 my-10 relative`}>
       {/* <Image
