@@ -3,7 +3,7 @@ import { layout } from "@/styles/style";
 import Button from "./Button";
 
 const ProjectHighlight: React.FC = () => (
-  <section className={`${layout.section} bg-green-50 py-16`}>
+  <section id="projet" className={`${layout.section} bg-green-50 py-16`}>
     <div className={`${styles.boxWidth} mx-auto px-4`}>
       <h2 className="text-4xl font-bold text-center mb-12 text-green-800">
         Projet en cours

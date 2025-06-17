@@ -2,6 +2,7 @@ import styles from "@/styles/style";
 
 const Contact: React.FC = () => (
   <section
+    id="contact"
     className={`${styles.flexCenter} ${styles.marginY} ${styles.padding} flex flex-col lg:flex-row gap-10 bg-white/5 backdrop-blur-md rounded-[20px] shadow-xl border border-white/10`}
   >
     {/* Formulaire de contact */}
@@ -89,6 +90,28 @@ const Contact: React.FC = () => (
             className="text-lg font-semibold underline hover:text-yellow-300 transition"
           >
             +243 998 054 815
+          </a>
+        </div>
+
+        <div className="flex items-center justify-center gap-3">
+          <svg
+            className="w-6 h-6 text-yellow-300 animate-pulse"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+            />
+          </svg>
+          <a
+            href="mailto:girenadslab@gmail.com"
+            className="text-lg font-semibold underline hover:text-yellow-300 transition"
+          >
+            girenadslab@gmail.com
           </a>
         </div>
       </div>

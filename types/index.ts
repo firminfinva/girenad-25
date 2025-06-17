@@ -15,4 +15,5 @@ export interface FeedBackProps {
   title: string;
   name: string;
   img: string | any;
+  email: string;
 }

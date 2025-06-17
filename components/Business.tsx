@@ -34,14 +34,15 @@ const Business: React.FC = () => (
   <section id="features" className={`${layout.section} flex`}>
     <div className={layout.sectionInfo}>
       <h2 className={styles.heading2}>
-        Progrès Durables, <br className="sm:block hidden" />
-        <span className="text-[20px]">Reduire, Améliorer, Préserver.</span>
+        Conservation & Développement, <br className="sm:block hidden" />
+        <span className="text-[20px]">Gouvernance, Droits, Durabilité.</span>
       </h2>
       <p className={`${styles.paragraph} max-w-[470px] mt-5`}>
-        Avec les bons choix écologiques, vous pouvez contribuer à un
-        environnement plus sain en réduisant les déchets, en économisant
-        l'énergie et en soutenant la durabilité. Mais avec tant d'options
-        disponibles, il peut être difficile de faire le meilleur choix.
+        Notre mission est d'accompagner les communautés locales dans la gestion
+        durable des ressources naturelles. Nous travaillons à renforcer la
+        gouvernance locale, protéger la biodiversité et créer des moyens de
+        subsistance durables pour les populations du Nord-Kivu, tout en
+        préservant les écosystèmes fragiles de la région.
       </p>
     </div>
     <div className={`${layout.sectionImg} flex-col`}>

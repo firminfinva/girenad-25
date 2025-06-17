@@ -27,13 +27,11 @@ export const navLinks = [
     title: "Accueil",
     link: "/",
   },
-
   {
-    id: "programme",
-    title: "Programme",
-    link: "#programme",
+    id: "projet",
+    title: "Projet",
+    link: "#projet",
   },
-
   {
     id: "offres",
     title: "Nos offres",
@@ -54,22 +52,24 @@ export const navLinks = [
 export const features = [
   {
     id: "feature-1",
-    icon: star, // Une icône représentant un feu ou une flamme pour symboliser la consommation de makala.
-    title: "Réduire",
+    icon: star,
+    title: "Gouvernance",
     content:
-      "Réduire la consommation de makala par habitant grâce à l'utilisation de foyers efficaces. Depuis septembre 2017, 5 346 foyers vendus.",
+      "Renforcement des capacités des communautés locales pour une gestion participative et transparente des ressources naturelles.",
   },
   {
     id: "feature-2",
-    icon: shield, // Une icône de feuille pour illustrer l'écomakala et la foresterie durable.
-    title: "Améliorer",
-    content: "Produire de l'ecomakala à partir d'une foresterie durable.",
+    icon: shield,
+    title: "Droits",
+    content:
+      "Protection et promotion des droits des communautés locales dans la gestion des ressources naturelles.",
   },
   {
     id: "feature-3",
-    icon: send, // Une icône d'arbre pour symboliser le reboisement et la biodiversité.
-    title: "Préserver",
-    content: "Permettant le reboisement et la protection de la biodiversité.",
+    icon: send,
+    title: "Durabilité",
+    content:
+      "Développement de solutions durables pour la conservation des écosystèmes et l'amélioration des moyens de subsistance.",
   },
 ];
 
@@ -78,17 +78,19 @@ export const feedback = [
     id: "feedback-1",
     content:
       "Soutenir la transition vers un approvisionnement énergétique durable et éviter la déforestation.Makala est le nom local du charbon de bois produit à partir du bois récolté sur les arbres, qui, avec le bois de feu, est la seule source d'énergie accessible aux communautés du Nord-Kivu. À l'heure actuelle, la part du lion du makala sur le marché est produite à partir des forêts naturelles du parc national des Virunga. Vu qu'il est interdit de récolter du bois dans ces forêts, le makala est produit illégalement.L'approvisionnement en bois énergie est un enjeu complexe, notamment pour réduire la déforestation dans le Parc National des Virunga sans augmenter le prix du makala pour les ménages de Goma. Le projet éco-makala repose sur l'objectif de commercialiser du makala durable, produit légalement, dit éco-makala, qui est produit à partir d'arbres à croissance rapide, plantés sur les zones périphériques du Parc National des Virunga.",
-    name: "Herman Jensen",
+    name: "Alphone Muhindo Valivambene",
     title: "Makala → ecomakala",
     img: Project1,
+    email: "alphone.muhindo@girenad.org",
   },
   {
     id: "feedback-2",
     content:
       "Soutenir la transition vers un approvisionnement énergétique durable et éviter la déforestation.L'Est de la RDC et plus précisément la province du Nord-Kivu est la région la plus densément peuplée de la République démocratique du Congo (RDC). Plus de 90% de la population dépend du bois énergie et/ou du charbon de bois pour ses besoins énergétiques. Ces deux faits entraînent une énorme pression sur les ressources forestières de la région. La quantité de ressources forestières légales n'est pas suffisante pour assurer les besoins de la population locale, entraînant une augmentation importante des coûts d'achat de bois et de charbon de bois (pression sur les ménages) et une dépendance de l'approvisionnement par l'exploitation illégale et non durable des les forêts du Parc Naturel des Virunga (ViPN), le parc le plus ancien et le plus diversifié d'Afrique. Le ViNP est reconnu comme site du patrimoine mondial de l'UNESCO, mais souffre de déforestation et de dégradation principalement dues à l'expansion agricole et à l'extraction de bois à des fins énergétiques pour et par la population locale. Mais, le commerce du charbon de bois est une activité presque totalement illégale aux mains de groupes armés et les prix continuent d'augmenter, et donc pas en faveur de la population locale.",
-    name: "Steve Mark",
+    name: "Silvain Nganduli",
     title: "Efficacité énergétique / Reboisement",
     img: Project2,
+    email: "silvain.nganduli@girenad.org",
   },
   {
     id: "feedback-3",
@@ -97,6 +99,16 @@ export const feedback = [
     name: "Kenn Gallagher",
     title: "Préserver : Reboisement",
     img: Project3,
+    email: "kenn.gallagher@girenad.org",
+  },
+  {
+    id: "feedback-4",
+    content:
+      "John Doe brings extensive experience in environmental conservation and sustainable development. With a background in forestry management and community engagement, John has been instrumental in developing innovative approaches to sustainable resource management. His work focuses on creating sustainable livelihoods for local communities while ensuring the protection of natural resources. John's expertise in project management and stakeholder engagement has helped bridge the gap between conservation goals and community needs.",
+    name: "John Doe",
+    title: "Environmental Specialist",
+    img: Project1,
+    email: "john.doe@girenad.org",
   },
 ];
 
