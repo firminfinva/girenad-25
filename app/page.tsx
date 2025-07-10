@@ -17,11 +17,11 @@ const Home: React.FC = () => {
             <Hero />
           </div>
         </div>
-        <div className={`bg-primary ${styles.flexStart}`}>
+        {/* <div className={`bg-primary ${styles.flexStart}`}>
           <div className={`${styles.boxWidth}`}>
             <Stats />
           </div>
-        </div>
+        </div> */}
         <div className={`bg-white ${styles.paddingX} ${styles.flexStart}`}>
           <div className={`${styles.boxWidth}`}>
             <AboutUs />
@@ -37,11 +37,11 @@ const Home: React.FC = () => {
             <Business />
           </div>
         </div>
-        <div className={`bg-white ${styles.paddingX} ${styles.flexStart}`}>
+        {/* <div className={`bg-white ${styles.paddingX} ${styles.flexStart}`}>
           <div className={`${styles.boxWidth}`}>
             <TheOdd />
           </div>
-        </div>
+        </div> */}
         {/* <div
           className={`bg-slate-400 ${styles.paddingX} ${styles.flexStart}`}
           style={{
@@ -52,18 +52,18 @@ const Home: React.FC = () => {
             <CardDeal />
           </div> */}
         {/* </div> */}
-        <div
+        {/* <div
           className={`bg-teal-900 ${styles.paddingX} ${styles.flexStart} bg-[url('/assets/bg1.jpg')] bg-cover bg-center `}
         >
           <div className={`${styles.boxWidth}`}>
             <Theprograms />
           </div>
-        </div>
-        <div className={`bg-white ${styles.paddingX} ${styles.flexStart}`}>
+        </div> */}
+        {/* <div className={`bg-white ${styles.paddingX} ${styles.flexStart}`}>
           <div className={`${styles.boxWidth}`}>
             <Partenaire />
           </div>
-        </div>
+        </div> */}
         <div
           className={`bg-primary ${styles.paddingX} ${styles.flexStart} bg-[url('/assets/bg4.jpg')] bg-cover bg-center `}
         >

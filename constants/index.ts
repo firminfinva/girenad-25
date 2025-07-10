@@ -32,21 +32,26 @@ export const navLinks = [
     title: "Projet",
     link: "#projet",
   },
-  {
-    id: "offres",
-    title: "Nos offres",
-    link: "/offres",
-  },
-  {
-    id: "partenaires",
-    title: "Partenaires",
-    link: "#partenaires",
-  },
+  // {
+  //   id: "offres",
+  //   title: "Nos offres",
+  //   link: "/offres",
+  // },
+  // {
+  //   id: "partenaires",
+  //   title: "Partenaires",
+  //   link: "#partenaires",
+  // },
   {
     id: "contact",
     title: "Contact",
     link: "#contact",
   },
+  // {
+  //   id: "don",
+  //   title: "Faire un don",
+  //   link: "/don",
+  // },
 ];
 
 export const features = [

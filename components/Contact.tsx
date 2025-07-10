@@ -64,14 +64,14 @@ const Contact: React.FC = () => (
             />
           </svg>
           <a
-            href="tel:+243994261583"
+            href="tel:+243998384839"
             className="text-lg font-semibold underline hover:text-yellow-300 transition"
           >
-            +243 994 261 583
+            +243 998 384 839
           </a>
         </div>
 
-        <div className="flex items-center justify-center gap-3">
+        {/* <div className="flex items-center justify-center gap-3">
           <svg
             className="w-6 h-6 text-yellow-300 animate-pulse"
             fill="none"
@@ -91,7 +91,7 @@ const Contact: React.FC = () => (
           >
             +243 998 054 815
           </a>
-        </div>
+        </div> */}
 
         <div className="flex items-center justify-center gap-3">
           <svg
@@ -118,7 +118,7 @@ const Contact: React.FC = () => (
 
       {/* Bouton WhatsApp */}
       <a
-        href="https://wa.me/243994261583"
+        href="https://wa.me/+243998384839"
         target="_blank"
         rel="noopener noreferrer"
         className="inline-flex items-center justify-center gap-2 px-4 py-2 mt-4 bg-green-500 hover:bg-green-600 transition text-white rounded-lg text-sm font-medium shadow-lg"
