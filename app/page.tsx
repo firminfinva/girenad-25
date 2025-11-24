@@ -7,6 +7,7 @@ import Theprograms from "@components/Theprograms";
 import TheOdd from "@components/TheOdd";
 import AboutUs from "@components/AboutUs";
 import ProjectHighlight from "@components/ProjectHighlight";
+import Activities from "@components/Activities";
 
 const Home: React.FC = () => {
   return (
@@ -32,17 +33,22 @@ const Home: React.FC = () => {
             <ProjectHighlight />
           </div>
         </div>
+        <div className={`bg-white ${styles.paddingX} ${styles.flexStart}`}>
+          <div className={`${styles.boxWidth}`}>
+            <Activities />
+          </div>
+        </div>
         <div className={`bg-slate-700 ${styles.paddingX} ${styles.flexStart}`}>
           <div className={`${styles.boxWidth}`}>
             <Business />
           </div>
         </div>
-        {/* <div className={`bg-white ${styles.paddingX} ${styles.flexStart}`}>
+        <div className={`bg-white ${styles.paddingX} ${styles.flexStart}`}>
           <div className={`${styles.boxWidth}`}>
             <TheOdd />
           </div>
-        </div> */}
-        {/* <div
+        </div>
+        <div
           className={`bg-slate-400 ${styles.paddingX} ${styles.flexStart}`}
           style={{
             background: "linear-gradient(to bottom, white, slategray)",
@@ -50,20 +56,20 @@ const Home: React.FC = () => {
         >
           <div className={`${styles.boxWidth}`}>
             <CardDeal />
-          </div> */}
-        {/* </div> */}
-        {/* <div
+          </div>
+        </div>
+        <div
           className={`bg-teal-900 ${styles.paddingX} ${styles.flexStart} bg-[url('/assets/bg1.jpg')] bg-cover bg-center `}
         >
           <div className={`${styles.boxWidth}`}>
             <Theprograms />
           </div>
-        </div> */}
-        {/* <div className={`bg-white ${styles.paddingX} ${styles.flexStart}`}>
+        </div>
+        <div className={`bg-white ${styles.paddingX} ${styles.flexStart}`}>
           <div className={`${styles.boxWidth}`}>
             <Partenaire />
           </div>
-        </div> */}
+        </div>
         <div
           className={`bg-primary ${styles.paddingX} ${styles.flexStart} bg-[url('/assets/bg4.jpg')] bg-cover bg-center `}
         >

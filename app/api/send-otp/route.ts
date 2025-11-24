@@ -1,0 +1,96 @@
+import { NextRequest, NextResponse } from "next/server";
+import nodemailer from "nodemailer";
+import { PrismaClient } from "@prisma/client";
+
+const prisma = new PrismaClient();
+
+export async function POST(request: NextRequest) {
+  try {
+    const { email } = await request.json();
+
+    if (!email || !email.includes("@")) {
+      return NextResponse.json({ error: "Email invalide" }, { status: 400 });
+    }
+
+    // Check if user exists in database
+    const user = await prisma.user.findUnique({
+      where: { email },
+    });
+
+    if (!user) {
+      return NextResponse.json(
+        { error: "Utilisateur non trouvé" },
+        { status: 404 }
+      );
+    }
+
+    // Get validated status directly from database using raw query
+    // This ensures we get the actual value even if Prisma client is out of sync
+    const userValidation = await prisma.$queryRaw<
+      Array<{ validated: boolean | null }>
+    >`
+      SELECT "validated" FROM "users" WHERE "email" = ${email}
+    `;
+
+    const isValidated = userValidation[0]?.validated === true;
+
+    console.log(
+      `User validation check for ${email}: validated =`,
+      userValidation[0]?.validated,
+      `(isValidated: ${isValidated})`
+    );
+
+    if (!isValidated) {
+      return NextResponse.json(
+        {
+          error:
+            "Votre compte n'est pas encore validé. Veuillez contacter l'administrateur.",
+        },
+        { status: 403 }
+      );
+    }
+
+    // Delete any existing OTP for this user
+    await prisma.oTP.deleteMany({
+      where: { userId: user.id },
+    });
+
+    // Generate 6-digit OTP
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    const expiresAt = new Date(Date.now() + 5 * 60 * 1000); // 5 minutes from now
+
+    // Create new OTP in database
+    await prisma.oTP.create({
+      data: {
+        userId: user.id,
+        otp,
+        expiresAt,
+      },
+    });
+
+    // Create transporter
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.GMAIL_USER,
+        pass: process.env.GMAIL_PASS,
+      },
+    });
+
+    // Send email
+    await transporter.sendMail({
+      from: process.env.GMAIL_USER,
+      to: email,
+      subject: "Votre OTP pour la connexion",
+      text: `Votre OTP est : ${otp}. Il expire dans 5 minutes.`,
+    });
+
+    return NextResponse.json({ message: "OTP envoyé avec succès" });
+  } catch (error) {
+    console.error("Error sending OTP:", error);
+    return NextResponse.json(
+      { error: "Échec de l'envoi de l'OTP" },
+      { status: 500 }
+    );
+  }
+}

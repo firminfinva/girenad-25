@@ -1,21 +1,21 @@
+"use client";
 import "@/styles/globals.css";
 import { Navbar } from "@components";
 import styles from "@styles/style";
-export const metadata = {
-  title: "girenad",
-  description: "girenad",
-};
+import { AuthProvider } from "@/contexts/AuthContext";
 
 const RootLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <html lang="en">
       <body>
-        <div className={`${styles.paddingX} ${styles.flexCenter}`}>
-          <div className={`${styles.boxWidth}`}>
-            <Navbar />
+        <AuthProvider>
+          <div className={`${styles.paddingX} ${styles.flexCenter}`}>
+            <div className={`${styles.boxWidth}`}>
+              <Navbar />
+            </div>
           </div>
-        </div>
-        {children}
+          {children}
+        </AuthProvider>
       </body>
     </html>
   );

@@ -1,0 +1,286 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  firstName    String
+  lastName     String
+  email        String   @unique
+  phone        String?
+  organization String?
+  password     String?
+  validated    Boolean  @default(false)
+  role         UserRole @default(USER)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relations
+  projects            Project[]
+  activities          Activity[]
+  donations           Donation[]
+  testimonials        Testimonial[]
+  ActivityParticipant ActivityParticipant[]
+  OTP                 OTP?
+
+  @@map("users")
+}
+
+model Project {
+  id               String        @id @default(cuid())
+  title            String
+  overview         String
+  context          String
+  generalObjective String
+  interventionArea String
+  duration         String
+  beneficiaries    String
+  status           ProjectStatus @default(PLANNED)
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  // Relations
+  creatorId          String
+  creator            User                @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+  specificObjectives SpecificObjective[]
+  mainActivities     MainActivity[]
+  partners           Partner[]
+  expectedResults    ExpectedResult[]
+  activities         Activity[]
+  galleries          Gallery[]
+  donations          Donation[]
+
+  @@map("projects")
+}
+
+model SpecificObjective {
+  id        String  @id @default(cuid())
+  content   String
+  order     Int
+  projectId String
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@map("specific_objectives")
+}
+
+model MainActivity {
+  id        String  @id @default(cuid())
+  content   String
+  order     Int
+  projectId String
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@map("main_activities")
+}
+
+model Partner {
+  id        String      @id @default(cuid())
+  name      String
+  type      PartnerType
+  projectId String
+  project   Project     @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@map("partners")
+}
+
+model ExpectedResult {
+  id        String  @id @default(cuid())
+  content   String
+  order     Int
+  projectId String
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@map("expected_results")
+}
+
+model Activity {
+  id          String         @id @default(cuid())
+  title       String
+  description String
+  date        DateTime
+  location    String?
+  status      ActivityStatus @default(UPCOMING)
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  // Relations
+  projectId    String?
+  project      Project?              @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  creatorId    String
+  creator      User                  @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+  participants ActivityParticipant[]
+  galleries    Gallery[]
+  programs     Program[]
+
+  @@map("activities")
+}
+
+model ActivityParticipant {
+  id         String   @id @default(cuid())
+  activityId String
+  activity   Activity @relation(fields: [activityId], references: [id], onDelete: Cascade)
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  joinedAt   DateTime @default(now())
+
+  @@unique([activityId, userId])
+  @@map("activity_participants")
+}
+
+model Program {
+  id         String   @id @default(cuid())
+  time       String
+  event      String
+  order      Int
+  activityId String
+  activity   Activity @relation(fields: [activityId], references: [id], onDelete: Cascade)
+
+  @@map("programs")
+}
+
+model Gallery {
+  id          String   @id @default(cuid())
+  title       String?
+  description String?
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+
+  // Relations
+  projectId  String?
+  project    Project?       @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  activityId String?
+  activity   Activity?      @relation(fields: [activityId], references: [id], onDelete: Cascade)
+  images     GalleryImage[]
+
+  @@map("galleries")
+}
+
+model GalleryImage {
+  id        String   @id @default(cuid())
+  imageUrl  String
+  altText   String?
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+
+  // Relations
+  galleryId String
+  gallery   Gallery @relation(fields: [galleryId], references: [id], onDelete: Cascade)
+
+  @@map("gallery_images")
+}
+
+model Donation {
+  id        String         @id @default(cuid())
+  amount    Float
+  currency  String         @default("USD")
+  message   String?
+  anonymous Boolean        @default(false)
+  status    DonationStatus @default(PENDING)
+  createdAt DateTime       @default(now())
+
+  // Relations
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  projectId String?
+  project   Project? @relation(fields: [projectId], references: [id], onDelete: SetNull)
+
+  @@map("donations")
+}
+
+model Testimonial {
+  id        String   @id @default(cuid())
+  content   String
+  author    String
+  role      String?
+  imageUrl  String?
+  rating    Int?     @default(5)
+  featured  Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  // Relations
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@map("testimonials")
+}
+
+model Contact {
+  id        String        @id @default(cuid())
+  name      String
+  email     String
+  subject   String
+  message   String
+  status    ContactStatus @default(UNREAD)
+  createdAt DateTime      @default(now())
+
+  @@map("contacts")
+}
+
+model Newsletter {
+  id         String   @id @default(cuid())
+  email      String   @unique
+  subscribed Boolean  @default(true)
+  createdAt  DateTime @default(now())
+
+  @@map("newsletters")
+}
+
+model OTP {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  otp       String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@map("otps")
+}
+
+// Enums
+enum UserRole {
+  ADMIN
+  MODERATOR
+  USER
+}
+
+enum ProjectStatus {
+  PLANNED
+  ONGOING
+  COMPLETED
+  CANCELLED
+}
+
+enum ActivityStatus {
+  UPCOMING
+  ONGOING
+  COMPLETED
+  CANCELLED
+}
+
+enum PartnerType {
+  DONOR
+  IMPLEMENTING_PARTNER
+  TECHNICAL_PARTNER
+  COMMUNITY_PARTNER
+}
+
+enum DonationStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+}
+
+enum ContactStatus {
+  UNREAD
+  READ
+  RESPONDED
+}

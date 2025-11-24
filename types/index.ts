@@ -17,3 +17,15 @@ export interface FeedBackProps {
   img: string | any;
   email: string;
 }
+
+export interface ActivityProps {
+  id: string;
+  title: string;
+  description: string;
+  date: string;
+  img: string | any;
+  frenchTitle?: string;
+  participatingOrganizations: string[];
+  onlineEventLink?: string;
+  program: { time: string; event: string }[];
+}

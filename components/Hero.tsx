@@ -25,7 +25,7 @@ const Hero: React.FC = () => (
         </p>
       </div>
       <div className="flex flex-row justify-between items-center w-full">
-        <h1 className="flex-1 font-poppins font-semibold ss:text-[40px] text-[45px] ss:leading-[65px] leading-[75px]">
+        <h1 className="flex-1 font-poppins font-semibold ss:text-[40px] text-[43px] ss:leading-[55px] leading-[55px]">
           Nous accompagnons les communautés locales et les entités territoriales
           dans une gouvernance équitable, inclusive et durable.
         </h1>
