@@ -45,6 +45,12 @@ const Sidebar: React.FC = () => {
       roles: ["ADMIN"],
     },
     {
+      title: "Équipe",
+      href: "/admin/team",
+      icon: "👤",
+      roles: ["ADMIN"],
+    },
+    {
       title: "Statistiques",
       href: "/admin/statistics",
       icon: "📈",

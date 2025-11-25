@@ -1,5 +1,7 @@
+import React from "react";
 import styles from "@/styles/style";
 import { stats } from "@/constants";
+
 const Stats: React.FC = () => (
   <div className={`sm:px-16 px-6 `}>
     <p className="text-white p-[20px] font-extrabold xs:text-[26px] text-[21px]">

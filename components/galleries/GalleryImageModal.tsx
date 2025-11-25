@@ -31,10 +31,12 @@ const GalleryImageModal: React.FC<GalleryImageModalProps> = ({
 }) => {
   const [images, setImages] = useState<GalleryImage[]>(gallery.images);
   const [loading, setLoading] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
   const [showAddForm, setShowAddForm] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [formData, setFormData] = useState({
-    imageUrl: "",
     altText: "",
   });
 
@@ -63,6 +65,38 @@ const GalleryImageModal: React.FC<GalleryImageModalProps> = ({
     });
   };
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // Validate file type
+      const allowedTypes = [
+        "image/jpeg",
+        "image/jpg",
+        "image/png",
+        "image/gif",
+        "image/webp",
+      ];
+      if (!allowedTypes.includes(file.type)) {
+        setError(
+          "Type de fichier non autorisé. Formats acceptés: JPEG, PNG, GIF, WebP"
+        );
+        return;
+      }
+
+      // Validate file size (max 10MB)
+      if (file.size > 10 * 1024 * 1024) {
+        setError("Le fichier est trop volumineux. Taille maximale: 10MB");
+        return;
+      }
+
+      setSelectedFile(file);
+      setError("");
+      // Create preview URL
+      const url = URL.createObjectURL(file);
+      setPreviewUrl(url);
+    }
+  };
+
   const handleAddImage = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -71,15 +105,39 @@ const GalleryImageModal: React.FC<GalleryImageModalProps> = ({
       return;
     }
 
-    if (!formData.imageUrl.trim()) {
-      setError("L'URL de l'image est requise");
+    if (!selectedFile) {
+      setError("Veuillez sélectionner un fichier");
       return;
     }
 
     setLoading(true);
+    setUploading(true);
     setError("");
 
     try {
+      // Step 1: Upload file to Cloudinary
+      const uploadFormData = new FormData();
+      uploadFormData.append("file", selectedFile);
+      uploadFormData.append("folder", `girenad/projects/${projectId}/galleries/${gallery.id}`);
+      uploadFormData.append("resourceType", "image");
+
+      const uploadResponse = await fetch("/api/upload", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: uploadFormData,
+      });
+
+      if (!uploadResponse.ok) {
+        const uploadError = await uploadResponse.json();
+        throw new Error(uploadError.error || "Erreur lors de l'upload");
+      }
+
+      const uploadData = await uploadResponse.json();
+      setUploading(false);
+
+      // Step 2: Create gallery image with Cloudinary URL
       const response = await fetch(
         `/api/projects/${projectId}/gallery/${gallery.id}/images`,
         {
@@ -89,14 +147,16 @@ const GalleryImageModal: React.FC<GalleryImageModalProps> = ({
             Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({
-            imageUrl: formData.imageUrl,
+            imageUrl: uploadData.url,
             altText: formData.altText,
           }),
         }
       );
 
       if (response.ok) {
-        setFormData({ imageUrl: "", altText: "" });
+        setFormData({ altText: "" });
+        setSelectedFile(null);
+        setPreviewUrl(null);
         setShowAddForm(false);
         fetchImages();
       } else {
@@ -104,9 +164,12 @@ const GalleryImageModal: React.FC<GalleryImageModalProps> = ({
         setError(data.error || "Erreur lors de l'ajout de l'image");
       }
     } catch (err) {
-      setError("Erreur de connexion");
+      setError(
+        err instanceof Error ? err.message : "Erreur de connexion"
+      );
     } finally {
       setLoading(false);
+      setUploading(false);
     }
   };
 
@@ -191,17 +254,24 @@ const GalleryImageModal: React.FC<GalleryImageModalProps> = ({
               <form onSubmit={handleAddImage} className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    URL de l'Image *
+                    Fichier Image * (JPEG, PNG, GIF, WebP - Max 10MB)
                   </label>
                   <input
-                    type="url"
-                    name="imageUrl"
-                    required
-                    value={formData.imageUrl}
-                    onChange={handleInputChange}
+                    type="file"
+                    accept="image/jpeg,image/jpg,image/png,image/gif,image/webp"
+                    onChange={handleFileChange}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-green-500 focus:border-green-500"
-                    placeholder="https://example.com/image.jpg"
                   />
+                  {previewUrl && (
+                    <div className="mt-4">
+                      <p className="text-sm text-gray-600 mb-2">Aperçu:</p>
+                      <img
+                        src={previewUrl}
+                        alt="Preview"
+                        className="max-w-full h-48 object-cover rounded-md border border-gray-300"
+                      />
+                    </div>
+                  )}
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -218,10 +288,14 @@ const GalleryImageModal: React.FC<GalleryImageModalProps> = ({
                 </div>
                 <button
                   type="submit"
-                  disabled={loading || images.length >= 6}
+                  disabled={loading || uploading || images.length >= 6 || !selectedFile}
                   className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {loading ? "Ajout..." : "Ajouter l'Image"}
+                  {uploading
+                    ? "Upload en cours..."
+                    : loading
+                    ? "Ajout..."
+                    : "Ajouter l'Image"}
                 </button>
               </form>
             </div>

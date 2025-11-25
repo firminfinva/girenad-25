@@ -39,6 +39,16 @@ export async function GET(
             },
           },
         },
+        programs: {
+          orderBy: {
+            order: "asc",
+          },
+        },
+        organizations: {
+          orderBy: {
+            order: "asc",
+          },
+        },
       },
     });
 
@@ -74,13 +84,15 @@ export async function PATCH(
     }
 
     const body = await request.json();
-    const { title, description, date, location, status, projectId } = body;
+    const { title, description, date, location, imageUrl, status, projectId } =
+      body;
 
     const updateData: any = {};
     if (title) updateData.title = title;
     if (description) updateData.description = description;
     if (date) updateData.date = new Date(date);
     if (location !== undefined) updateData.location = location;
+    if (imageUrl !== undefined) updateData.imageUrl = imageUrl;
     if (status) updateData.status = status;
     if (projectId !== undefined) updateData.projectId = projectId;
 

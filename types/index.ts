@@ -11,6 +11,7 @@ export interface ButtonProps {
 }
 
 export interface FeedBackProps {
+  id?: string;
   content: string;
   title: string;
   name: string;

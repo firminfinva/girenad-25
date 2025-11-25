@@ -59,7 +59,7 @@ const Programme: React.FC<FeedBackProps> = ({
                   style={{ objectFit: "cover" }}
                 />
               </div>
-              <h2 className="text-2xl font-bold mb-2 text-center text-gray-800">
+              <h2 className="text-lg font-bold mb-2 text-center text-gray-800 whitespace-nowrap overflow-hidden text-ellipsis max-w-full px-4">
                 {name}
               </h2>
               <p className="text-lg text-gray-600 mb-2">{title}</p>

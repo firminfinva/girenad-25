@@ -30,6 +30,7 @@ model User {
   testimonials        Testimonial[]
   ActivityParticipant ActivityParticipant[]
   OTP                 OTP?
+  teamMember          TeamMember?
 
   @@map("users")
 }
@@ -107,18 +108,20 @@ model Activity {
   description String
   date        DateTime
   location    String?
+  imageUrl    String?
   status      ActivityStatus @default(UPCOMING)
   createdAt   DateTime       @default(now())
   updatedAt   DateTime       @updatedAt
 
   // Relations
-  projectId    String?
-  project      Project?              @relation(fields: [projectId], references: [id], onDelete: SetNull)
-  creatorId    String
-  creator      User                  @relation(fields: [creatorId], references: [id], onDelete: Cascade)
-  participants ActivityParticipant[]
-  galleries    Gallery[]
-  programs     Program[]
+  projectId     String?
+  project       Project?               @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  creatorId     String
+  creator       User                   @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+  participants  ActivityParticipant[]
+  galleries     Gallery[]
+  programs      Program[]
+  organizations ActivityOrganization[]
 
   @@map("activities")
 }
@@ -144,6 +147,16 @@ model Program {
   activity   Activity @relation(fields: [activityId], references: [id], onDelete: Cascade)
 
   @@map("programs")
+}
+
+model ActivityOrganization {
+  id         String   @id @default(cuid())
+  name       String
+  order      Int      @default(0)
+  activityId String
+  activity   Activity @relation(fields: [activityId], references: [id], onDelete: Cascade)
+
+  @@map("activity_organizations")
 }
 
 model Gallery {
@@ -242,6 +255,23 @@ model OTP {
   createdAt DateTime @default(now())
 
   @@map("otps")
+}
+
+model TeamMember {
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role        String?
+  bio         String?
+  imageUrl    String?
+  linkedinUrl String?
+  twitterUrl  String?
+  order       Int      @default(0)
+  featured    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("team_members")
 }
 
 // Enums
