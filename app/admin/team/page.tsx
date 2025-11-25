@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
+import { useAuthVerification } from "@/hooks/useAuthVerification";
 import Sidebar from "@/components/dashboards/Sidebar";
 import Link from "next/link";
 
@@ -25,23 +26,19 @@ interface TeamMember {
 }
 
 const TeamMembersPage: React.FC = () => {
-  const { token, isAuthenticated, user, loading: authLoading } = useAuth();
+  const { token } = useAuth();
   const router = useRouter();
+  // Verify token and role from server (ensures role changes are detected)
+  const { loading: verifying, isValid } = useAuthVerification("ADMIN");
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   useEffect(() => {
-    if (!authLoading && (!isAuthenticated || user?.role !== "ADMIN")) {
-      router.push("/dashboard");
-    }
-  }, [isAuthenticated, user, authLoading, router]);
-
-  useEffect(() => {
-    if (isAuthenticated) {
+    if (isValid) {
       fetchTeamMembers();
     }
-  }, [isAuthenticated]);
+  }, [isValid]);
 
   const fetchTeamMembers = async () => {
     try {
@@ -86,10 +83,10 @@ const TeamMembersPage: React.FC = () => {
     }
   };
 
-  if (loading || authLoading) {
+  if (loading || verifying || !isValid) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-purple-50 flex items-center justify-center">
-        <p className="text-gray-600">Chargement...</p>
+        <p className="text-gray-600">Vérification en cours...</p>
       </div>
     );
   }

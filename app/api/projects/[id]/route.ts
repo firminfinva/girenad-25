@@ -50,6 +50,11 @@ export async function GET(
             order: "asc",
           },
         },
+        featuredImages: {
+          orderBy: {
+            order: "asc",
+          },
+        },
       },
     });
 
@@ -95,6 +100,13 @@ export async function PATCH(
       mainActivities,
       partners,
       expectedResults,
+      // CV Organisationnel fields
+      funder,
+      amount,
+      currency,
+      actualResults,
+      challenges,
+      perspectives,
     } = body;
 
     // Start a transaction to update project and related entities
@@ -111,6 +123,13 @@ export async function PATCH(
           ...(duration !== undefined && { duration }),
           ...(beneficiaries !== undefined && { beneficiaries }),
           ...(status && { status }),
+          // CV Organisationnel fields
+          ...(funder !== undefined && { funder }),
+          ...(amount !== undefined && { amount }),
+          ...(currency !== undefined && { currency }),
+          ...(actualResults !== undefined && { actualResults }),
+          ...(challenges !== undefined && { challenges }),
+          ...(perspectives !== undefined && { perspectives }),
         },
       });
 
@@ -198,6 +217,11 @@ export async function PATCH(
           mainActivities: true,
           partners: true,
           expectedResults: true,
+          featuredImages: {
+            orderBy: {
+              order: "asc",
+            },
+          },
         },
       });
     });

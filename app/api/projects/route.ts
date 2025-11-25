@@ -7,7 +7,13 @@ const prisma = new PrismaClient();
 // GET - List all projects
 export async function GET(request: NextRequest) {
   try {
+    const { searchParams } = new URL(request.url);
+    const status = searchParams.get("status");
+
+    const where = status ? { status: status as any } : {};
+
     const projects = await prisma.project.findMany({
+      where,
       include: {
         creator: {
           select: {
@@ -15,6 +21,11 @@ export async function GET(request: NextRequest) {
             firstName: true,
             lastName: true,
             email: true,
+          },
+        },
+        featuredImages: {
+          orderBy: {
+            order: "asc",
           },
         },
       },

@@ -24,27 +24,13 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Get validated status directly from database using raw query
-    // This ensures we get the actual value even if Prisma client is out of sync
-    const userValidation = await prisma.$queryRaw<
-      Array<{ validated: boolean | null }>
-    >`
-      SELECT "validated" FROM "users" WHERE "email" = ${email}
-    `;
-
-    const isValidated = userValidation[0]?.validated === true;
-
-    console.log(
-      `User validation check for ${email}: validated =`,
-      userValidation[0]?.validated,
-      `(isValidated: ${isValidated})`
-    );
-
-    if (!isValidated) {
+    // Everyone can request OTP unless validated = false
+    // If validated = false, user is blocked and cannot request OTP
+    if (user.validated === false) {
       return NextResponse.json(
         {
           error:
-            "Votre compte n'est pas encore validé. Veuillez contacter l'administrateur.",
+            "Votre compte n'est pas validé. Veuillez contacter l'administrateur.",
         },
         { status: 403 }
       );

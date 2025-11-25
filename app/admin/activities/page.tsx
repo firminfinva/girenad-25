@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
+import { useAuthVerification } from "@/hooks/useAuthVerification";
 import Sidebar from "@/components/dashboards/Sidebar";
 import Link from "next/link";
 
@@ -19,27 +20,19 @@ interface Activity {
 }
 
 const ActivitiesManagementPage: React.FC = () => {
-  const { isAuthenticated, user, token, loading } = useAuth();
+  const { token } = useAuth();
   const router = useRouter();
+  // Verify token and role from server (ensures role changes are detected)
+  const { loading: verifying, isValid } = useAuthVerification("MODERATOR");
   const [activities, setActivities] = useState<Activity[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
 
   useEffect(() => {
-    if (
-      !loading &&
-      (!isAuthenticated ||
-        (user?.role !== "ADMIN" && user?.role !== "MODERATOR"))
-    ) {
-      router.push("/dashboard");
-    }
-  }, [isAuthenticated, user, loading, router]);
-
-  useEffect(() => {
-    if (isAuthenticated && token) {
+    if (isValid && token) {
       fetchActivities();
     }
-  }, [isAuthenticated, token]);
+  }, [isValid, token]);
 
   const fetchActivities = async () => {
     try {
@@ -82,19 +75,12 @@ const ActivitiesManagementPage: React.FC = () => {
     }
   };
 
-  if (loading || isLoading) {
+  if (isLoading || verifying || !isValid) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-purple-50 flex items-center justify-center">
-        <p className="text-gray-600">Chargement...</p>
+        <p className="text-gray-600">Vérification en cours...</p>
       </div>
     );
-  }
-
-  if (
-    !isAuthenticated ||
-    (user?.role !== "ADMIN" && user?.role !== "MODERATOR")
-  ) {
-    return null;
   }
 
   return (

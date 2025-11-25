@@ -32,6 +32,11 @@ export const navLinks = [
     title: "Projet",
     link: "#projet",
   },
+  {
+    id: "cv-organisationnel",
+    title: "CV organisationnel",
+    link: "/cv-organisationnel",
+  },
   // {
   //   id: "offres",
   //   title: "Nos offres",

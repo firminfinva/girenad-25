@@ -8,7 +8,7 @@ import ModeratorDashboard from "@/components/dashboards/ModeratorDashboard";
 import AdminDashboard from "@/components/dashboards/AdminDashboard";
 
 const DashboardPage: React.FC = () => {
-  const { isAuthenticated, user, token, loading } = useAuth();
+  const { isAuthenticated, user, token, loading, login } = useAuth();
   const router = useRouter();
   const [verifying, setVerifying] = useState(true);
 
@@ -37,10 +37,17 @@ const DashboardPage: React.FC = () => {
 
           const data = await response.json();
 
-          // Verify role matches
-          if (data.user.role !== user?.role) {
-            // Role mismatch, refresh user data
-            console.warn("Role mismatch detected");
+          // Verify role matches - if changed, update auth context
+          if (data.user && user && data.user.role !== user.role) {
+            // Role changed, update auth context with new role from server
+            console.warn("Role mismatch detected, updating user data");
+            login(token, {
+              id: data.user.id,
+              email: data.user.email,
+              firstName: user.firstName,
+              lastName: user.lastName,
+              role: data.user.role,
+            });
           }
         } catch (error) {
           console.error("Error verifying token:", error);

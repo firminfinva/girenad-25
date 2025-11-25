@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
+import { useAuthVerification } from "@/hooks/useAuthVerification";
 import Sidebar from "@/components/dashboards/Sidebar";
 import Link from "next/link";
 
@@ -18,23 +19,19 @@ interface Project {
 }
 
 const ProjectsManagementPage: React.FC = () => {
-  const { isAuthenticated, user, token, loading } = useAuth();
+  const { token } = useAuth();
   const router = useRouter();
+  // Verify token and role from server (ensures role changes are detected)
+  const { loading: verifying, isValid } = useAuthVerification("ADMIN");
   const [projects, setProjects] = useState<Project[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
 
   useEffect(() => {
-    if (!loading && (!isAuthenticated || user?.role !== "ADMIN")) {
-      router.push("/dashboard");
-    }
-  }, [isAuthenticated, user, loading, router]);
-
-  useEffect(() => {
-    if (isAuthenticated && token) {
+    if (isValid && token) {
       fetchProjects();
     }
-  }, [isAuthenticated, token]);
+  }, [isValid, token]);
 
   const fetchProjects = async () => {
     try {
@@ -77,16 +74,12 @@ const ProjectsManagementPage: React.FC = () => {
     }
   };
 
-  if (loading || isLoading) {
+  if (isLoading || verifying || !isValid) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-purple-50 flex items-center justify-center">
-        <p className="text-gray-600">Chargement...</p>
+        <p className="text-gray-600">Vérification en cours...</p>
       </div>
     );
-  }
-
-  if (!isAuthenticated || user?.role !== "ADMIN") {
-    return null;
   }
 
   return (

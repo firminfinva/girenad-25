@@ -1,4 +1,5 @@
 "use client";
+import { useEffect } from "react";
 import styles from "@/styles/style";
 import { Navbar, Hero, Stats, Business, CardDeal, Footer } from "@/components";
 import Contact from "@components/Contact";
@@ -10,6 +11,20 @@ import ProjectHighlight from "@components/ProjectHighlight";
 import Activities from "@components/Activities";
 
 const Home: React.FC = () => {
+  useEffect(() => {
+    // Handle hash navigation when coming from another page
+    const hash = window.location.hash;
+    if (hash) {
+      // Small delay to ensure page is rendered
+      setTimeout(() => {
+        const element = document.querySelector(hash);
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth" });
+        }
+      }, 100);
+    }
+  }, []);
+
   return (
     <>
       <div className="bg-white w-full overflow-hidden">

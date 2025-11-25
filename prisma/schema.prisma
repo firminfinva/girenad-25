@@ -18,7 +18,7 @@ model User {
   phone        String?
   organization String?
   password     String?
-  validated    Boolean  @default(false)
+  validated    Boolean  @default(true)
   role         UserRole @default(USER)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
@@ -48,9 +48,17 @@ model Project {
   createdAt        DateTime      @default(now())
   updatedAt        DateTime      @updatedAt
 
+  // CV Organisationnel fields
+  funder        String? // Bailleur de fonds
+  amount        Float? // Montant
+  currency      String? @default("USD") // Devise
+  actualResults String? // Principaux résultats (synthèse de 200 mots)
+  challenges    String? // Défis rencontrés
+  perspectives  String? // Perspectives
+
   // Relations
   creatorId          String
-  creator            User                @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+  creator            User                   @relation(fields: [creatorId], references: [id], onDelete: Cascade)
   specificObjectives SpecificObjective[]
   mainActivities     MainActivity[]
   partners           Partner[]
@@ -58,6 +66,7 @@ model Project {
   activities         Activity[]
   galleries          Gallery[]
   donations          Donation[]
+  featuredImages     ProjectFeaturedImage[]
 
   @@map("projects")
 }
@@ -272,6 +281,20 @@ model TeamMember {
   updatedAt   DateTime @updatedAt
 
   @@map("team_members")
+}
+
+model ProjectFeaturedImage {
+  id        String   @id @default(cuid())
+  imageUrl  String
+  altText   String?
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+
+  // Relations
+  projectId String
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@map("project_featured_images")
 }
 
 // Enums

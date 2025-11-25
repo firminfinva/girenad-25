@@ -63,6 +63,7 @@ export async function POST(request: NextRequest) {
     });
 
     // Generate JWT token (only store userId)
+    // Note: validated field is only changed by admin, not automatically
     const token = jwt.sign(
       {
         userId: user.id,
@@ -85,6 +86,7 @@ export async function POST(request: NextRequest) {
           firstName: user.firstName,
           lastName: user.lastName,
           role: user.role,
+          validated: user.validated,
         },
       },
       { status: 200 }

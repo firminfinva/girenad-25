@@ -22,6 +22,10 @@ export async function GET(request: NextRequest) {
         lastName: true,
         email: true,
         phone: true,
+        role: true,
+        validated: true,
+        organization: true,
+        createdAt: true,
       },
       orderBy: {
         createdAt: "desc",

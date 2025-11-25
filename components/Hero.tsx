@@ -16,7 +16,7 @@ const Hero: React.FC = () => (
     >
       <div className="flex flex-row items-center py-[6px] px-4 bg-slate-900 rounded-[10px] mb-2 w-full">
         <p
-          className={`font-poppins font-normal text-dimWhite sm:text-[11px] text-[9px] leading-[30.8px] ml-2 md:whitespace-nowrap`}
+          className={`font-poppins font-normal text-dimWhite sm:text-[12px] text-[10px] leading-[34px] ml-2 md:whitespace-nowrap`}
         >
           <span className="">
             Groupe d'Appui à la Gestion Intégrée des Ressources Naturelles pour

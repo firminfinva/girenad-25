@@ -49,3 +49,7 @@ export async function verifyToken(
 export function isAdminOrModerator(role: string): boolean {
   return role === "ADMIN" || role === "MODERATOR";
 }
+
+export function isAdmin(role: string): boolean {
+  return role === "ADMIN";
+}

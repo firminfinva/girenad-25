@@ -54,9 +54,6 @@ const ActivityCard: React.FC<ActivityCardProps> = ({
             {title}
           </h2>
           <p className="text-sm text-white mb-2">{formattedDate}</p>
-          {location && (
-            <p className="text-xs text-white/80 mb-2">📍 {location}</p>
-          )}
         </div>
       </div>
       <Link href={`/activities/${id}`}>

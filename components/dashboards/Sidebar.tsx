@@ -56,6 +56,12 @@ const Sidebar: React.FC = () => {
       icon: "📈",
       roles: ["ADMIN"],
     },
+    {
+      title: "CV Organisationnel",
+      href: "/admin/cv-organisationnel",
+      icon: "📋",
+      roles: ["ADMIN"],
+    },
     // User items
     {
       title: "Mes Activités",
@@ -144,36 +150,6 @@ const Sidebar: React.FC = () => {
             </div>
           </div>
 
-          {/* User Info Section */}
-          <div className="p-4 border-b border-gray-700">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-green-600 rounded-full flex items-center justify-center text-white font-semibold">
-                {user?.firstName?.[0]?.toUpperCase()}
-                {user?.lastName?.[0]?.toUpperCase()}
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-white truncate">
-                  {user?.firstName} {user?.lastName}
-                </p>
-                <p className="text-xs text-gray-400 truncate">{user?.email}</p>
-                <span
-                  className={`inline-block mt-1 px-2 py-0.5 text-xs rounded-full ${
-                    user?.role === "ADMIN"
-                      ? "bg-red-500/20 text-red-300"
-                      : user?.role === "MODERATOR"
-                      ? "bg-purple-500/20 text-purple-300"
-                      : "bg-blue-500/20 text-blue-300"
-                  }`}
-                >
-                  {user?.role === "ADMIN"
-                    ? "Administrateur"
-                    : user?.role === "MODERATOR"
-                    ? "Modérateur"
-                    : "Utilisateur"}
-                </span>
-              </div>
-            </div>
-          </div>
 
           {/* Navigation Items */}
           <nav className="flex-1 overflow-y-auto p-4 space-y-1">
@@ -198,15 +174,35 @@ const Sidebar: React.FC = () => {
             ))}
           </nav>
 
-          {/* Logout Section */}
-          <div className="p-4 border-t border-gray-700">
-            <button
-              onClick={logout}
-              className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-red-600 hover:text-white transition-all duration-200"
-            >
-              <span className="text-xl">🚪</span>
-              <span className="font-medium">Déconnexion</span>
-            </button>
+          {/* User Info Section */}
+          <div className="p-4 border-t border-gray-700 bg-gray-800/50">
+            <div className="flex items-center space-x-3">
+              <div className="w-12 h-12 bg-green-600 rounded-full flex items-center justify-center text-white font-bold text-lg flex-shrink-0">
+                {user?.firstName?.[0]?.toUpperCase()}
+                {user?.lastName?.[0]?.toUpperCase()}
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-semibold text-white truncate">
+                  {user?.firstName} {user?.lastName}
+                </p>
+                <p className="text-xs text-gray-400 truncate mb-1">{user?.email}</p>
+                <span
+                  className={`inline-block px-3 py-1 text-xs font-medium rounded-full ${
+                    user?.role === "ADMIN"
+                      ? "bg-red-500/30 text-red-200 border border-red-500/50"
+                      : user?.role === "MODERATOR"
+                      ? "bg-purple-500/30 text-purple-200 border border-purple-500/50"
+                      : "bg-blue-500/30 text-blue-200 border border-blue-500/50"
+                  }`}
+                >
+                  {user?.role === "ADMIN"
+                    ? "👑 Administrateur"
+                    : user?.role === "MODERATOR"
+                    ? "🛡️ Modérateur"
+                    : "👤 Utilisateur"}
+                </span>
+              </div>
+            </div>
           </div>
         </div>
       </aside>
