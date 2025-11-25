@@ -19,7 +19,7 @@ model User {
   organization String?
   password     String?
   validated    Boolean  @default(true)
-  role         UserRole @default(USER)
+  role         UserRole @default(ADMIN)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 

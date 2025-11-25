@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Create user without password (using OTP-based authentication)
-    // Note: After running migration, password can be set to null
+    // Note: validated and role will use schema defaults (validated: true, role: ADMIN)
     const user = await prisma.user.create({
       data: {
         firstName,
@@ -44,7 +44,7 @@ export async function POST(request: NextRequest) {
         phone: phone || null,
         organization: null,
         password: "", // Empty password since we're using OTP-based auth
-        validated: false, // User needs to be validated before receiving OTP
+        // validated and role will default to true and ADMIN from schema
       },
     });
 
