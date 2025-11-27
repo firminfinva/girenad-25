@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifyToken, isAdminOrModerator } from "@/lib/auth";
 import prisma from "@/lib/prisma";
-import { Prisma } from "@prisma/client";
 
 // GET - Get a single project by ID
 export async function GET(
@@ -109,7 +108,7 @@ export async function PATCH(
     } = body;
 
     // Start a transaction to update project and related entities
-    const project = await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
+    const project = await prisma.$transaction(async (tx) => {
       // Update project basic info
       const updatedProject = await tx.project.update({
         where: { id: params.id },
