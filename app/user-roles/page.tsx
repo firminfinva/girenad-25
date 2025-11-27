@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { useAuthVerification } from "@/hooks/useAuthVerification";
 import Sidebar from "@/components/dashboards/Sidebar";
-import Link from "next/link";
 
 interface User {
   id: string;
@@ -19,16 +18,15 @@ interface User {
   createdAt: string;
 }
 
-const UsersManagementPage: React.FC = () => {
+const UserRolesManagementPage: React.FC = () => {
   const { token } = useAuth();
   const router = useRouter();
   // Verify token and role from server (ensures role changes are detected)
-  const { loading: verifying, isValid } = useAuthVerification("ADMIN");
+  const { loading: verifying, isValid } = useAuthVerification("USER");
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [filterRole, setFilterRole] = useState<string>("");
-  const [filterValidated, setFilterValidated] = useState<string>("");
 
   useEffect(() => {
     if (isValid && token) {
@@ -39,7 +37,7 @@ const UsersManagementPage: React.FC = () => {
   const fetchUsers = async () => {
     try {
       setLoading(true);
-      const response = await fetch("/api/users", {
+      const response = await fetch("/api/users/roles", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -64,35 +62,13 @@ const UsersManagementPage: React.FC = () => {
     }
 
     try {
-      const response = await fetch(`/api/users/${userId}`, {
+      const response = await fetch(`/api/users/${userId}/role`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({ role: newRole }),
-      });
-
-      if (response.ok) {
-        fetchUsers();
-      } else {
-        const data = await response.json();
-        alert(data.error || "Erreur lors de la mise à jour");
-      }
-    } catch (err) {
-      alert("Erreur de connexion");
-    }
-  };
-
-  const handleToggleValidation = async (userId: string, currentStatus: boolean) => {
-    try {
-      const response = await fetch(`/api/users/${userId}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ validated: !currentStatus }),
       });
 
       if (response.ok) {
@@ -121,10 +97,23 @@ const UsersManagementPage: React.FC = () => {
     }
   };
 
+  const getRoleLabel = (role: string) => {
+    switch (role) {
+      case "SUPERADMIN":
+        return "Super Admin";
+      case "ADMIN":
+        return "Administrateur";
+      case "MODERATOR":
+        return "Modérateur";
+      case "USER":
+        return "Utilisateur";
+      default:
+        return role;
+    }
+  };
+
   const filteredUsers = users.filter((user) => {
     if (filterRole && user.role !== filterRole) return false;
-    if (filterValidated === "validated" && !user.validated) return false;
-    if (filterValidated === "unvalidated" && user.validated) return false;
     return true;
   });
 
@@ -145,14 +134,8 @@ const UsersManagementPage: React.FC = () => {
             <div className="bg-white rounded-xl shadow-2xl p-6 sm:p-8">
               <div className="flex justify-between items-center mb-6">
                 <h1 className="text-3xl font-bold text-gray-900">
-                  Gestion des Utilisateurs
+                  Gestion des Rôles Utilisateurs
                 </h1>
-                <Link
-                  href="/admin/users/create"
-                  className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition"
-                >
-                  + Créer un Utilisateur
-                </Link>
               </div>
 
               {error && (
@@ -162,37 +145,21 @@ const UsersManagementPage: React.FC = () => {
               )}
 
               {/* Filters */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Filtrer par rôle
-                  </label>
-                  <select
-                    value={filterRole}
-                    onChange={(e) => setFilterRole(e.target.value)}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                  >
-                    <option value="">Tous les rôles</option>
-                    <option value="SUPERADMIN">Super Admin</option>
-                    <option value="ADMIN">Administrateur</option>
-                    <option value="MODERATOR">Modérateur</option>
-                    <option value="USER">Utilisateur</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Filtrer par statut
-                  </label>
-                  <select
-                    value={filterValidated}
-                    onChange={(e) => setFilterValidated(e.target.value)}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                  >
-                    <option value="">Tous les statuts</option>
-                    <option value="validated">Validés</option>
-                    <option value="unvalidated">Non validés</option>
-                  </select>
-                </div>
+              <div className="mb-6">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Filtrer par rôle
+                </label>
+                <select
+                  value={filterRole}
+                  onChange={(e) => setFilterRole(e.target.value)}
+                  className="w-full md:w-64 px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                >
+                  <option value="">Tous les rôles</option>
+                  <option value="SUPERADMIN">Super Admin</option>
+                  <option value="ADMIN">Administrateur</option>
+                  <option value="MODERATOR">Modérateur</option>
+                  <option value="USER">Utilisateur</option>
+                </select>
               </div>
 
               {filteredUsers.length === 0 ? (
@@ -202,14 +169,6 @@ const UsersManagementPage: React.FC = () => {
                       ? "Aucun utilisateur enregistré"
                       : "Aucun utilisateur ne correspond aux filtres"}
                   </p>
-                  {users.length === 0 && (
-                    <Link
-                      href="/admin/users/create"
-                      className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition inline-block"
-                    >
-                      Créer le premier utilisateur
-                    </Link>
-                  )}
                 </div>
               ) : (
                 <div className="overflow-x-auto">
@@ -226,16 +185,13 @@ const UsersManagementPage: React.FC = () => {
                           Téléphone
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Rôle
+                          Rôle Actuel
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Statut
+                          Changer le Rôle
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           Date de création
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Actions
                         </th>
                       </tr>
                     </thead>
@@ -263,14 +219,21 @@ const UsersManagementPage: React.FC = () => {
                             </div>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
+                            <span
+                              className={`inline-block px-3 py-1 text-xs font-medium rounded-full ${getRoleBadgeColor(
+                                userItem.role
+                              )}`}
+                            >
+                              {getRoleLabel(userItem.role)}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
                             <select
                               value={userItem.role}
                               onChange={(e) =>
                                 handleUpdateRole(userItem.id, e.target.value)
                               }
-                              className={`text-xs font-medium px-2 py-1 rounded ${getRoleBadgeColor(
-                                userItem.role
-                              )} border-0 focus:ring-2 focus:ring-green-500`}
+                              className="text-xs font-medium px-3 py-2 rounded border border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-green-500"
                             >
                               <option value="USER">Utilisateur</option>
                               <option value="MODERATOR">Modérateur</option>
@@ -278,35 +241,10 @@ const UsersManagementPage: React.FC = () => {
                               <option value="SUPERADMIN">Super Admin</option>
                             </select>
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <button
-                              onClick={() =>
-                                handleToggleValidation(
-                                  userItem.id,
-                                  userItem.validated
-                                )
-                              }
-                              className={`text-xs font-medium px-2 py-1 rounded ${
-                                userItem.validated
-                                  ? "bg-green-100 text-green-800"
-                                  : "bg-yellow-100 text-yellow-800"
-                              } hover:opacity-80 transition`}
-                            >
-                              {userItem.validated ? "Validé" : "Non validé"}
-                            </button>
-                          </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                             {new Date(userItem.createdAt).toLocaleDateString(
                               "fr-FR"
                             )}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                            <Link
-                              href={`/admin/users/${userItem.id}/edit`}
-                              className="text-blue-600 hover:text-blue-900 mr-4"
-                            >
-                              Modifier
-                            </Link>
                           </td>
                         </tr>
                       ))}
@@ -317,9 +255,7 @@ const UsersManagementPage: React.FC = () => {
 
               <div className="mt-4 text-sm text-gray-500">
                 Total: {filteredUsers.length} utilisateur(s)
-                {filterRole || filterValidated
-                  ? ` (${users.length} au total)`
-                  : ""}
+                {filterRole ? ` (${users.length} au total)` : ""}
               </div>
             </div>
           </div>
@@ -329,5 +265,5 @@ const UsersManagementPage: React.FC = () => {
   );
 };
 
-export default UsersManagementPage;
+export default UserRolesManagementPage;
 

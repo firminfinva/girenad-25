@@ -79,6 +79,7 @@ const DashboardPage: React.FC = () => {
   // Render dashboard based on user role
   const renderDashboard = () => {
     switch (user.role) {
+      case "SUPERADMIN":
       case "ADMIN":
         return <AdminDashboard user={user} />;
       case "MODERATOR":

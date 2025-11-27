@@ -1,15 +1,13 @@
 import { NextRequest } from "next/server";
 import jwt from "jsonwebtoken";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import prisma from "@/lib/prisma";
 const JWT_SECRET =
   process.env.JWT_SECRET || "your-secret-key-change-in-production";
 
 export interface AuthUser {
   userId: string;
   email: string;
-  role: "ADMIN" | "MODERATOR" | "USER";
+  role: "SUPERADMIN" | "ADMIN" | "MODERATOR" | "USER";
 }
 
 export async function verifyToken(
@@ -39,7 +37,7 @@ export async function verifyToken(
     return {
       userId: user.id,
       email: user.email,
-      role: user.role as "ADMIN" | "MODERATOR" | "USER",
+      role: user.role as "SUPERADMIN" | "ADMIN" | "MODERATOR" | "USER",
     };
   } catch (error) {
     return null;
@@ -47,9 +45,9 @@ export async function verifyToken(
 }
 
 export function isAdminOrModerator(role: string): boolean {
-  return role === "ADMIN" || role === "MODERATOR";
+  return role === "SUPERADMIN" || role === "ADMIN" || role === "MODERATOR";
 }
 
 export function isAdmin(role: string): boolean {
-  return role === "ADMIN";
+  return role === "SUPERADMIN" || role === "ADMIN";
 }

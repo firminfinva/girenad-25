@@ -1,18 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
-import { verifyToken, isAdminOrModerator } from "@/lib/auth";
+import { verifyToken } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 
-// GET - List all users (for team member selection)
+// GET - List all users (for role management by USER role)
 export async function GET(request: NextRequest) {
   try {
     const user = await verifyToken(request);
-    if (!user || !isAdminOrModerator(user.role)) {
+    if (!user) {
       return NextResponse.json(
-        { error: "Non autorisé. Admin ou Modérateur requis." },
+        { error: "Non autorisé. Authentification requise." },
         { status: 403 }
       );
     }
 
+    // Allow USER role to see all users for role management
     const users = await prisma.user.findMany({
       select: {
         id: true,

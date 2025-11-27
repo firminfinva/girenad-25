@@ -7,7 +7,6 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 model User {
@@ -19,7 +18,7 @@ model User {
   organization String?
   password     String?
   validated    Boolean  @default(true)
-  role         UserRole @default(ADMIN)
+  role         UserRole @default(USER)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
@@ -299,6 +298,7 @@ model ProjectFeaturedImage {
 
 // Enums
 enum UserRole {
+  SUPERADMIN
   ADMIN
   MODERATOR
   USER

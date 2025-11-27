@@ -29,6 +29,12 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ user }) => {
           </h2>
           <div className="space-y-3">
             <Link
+              href="/user-roles"
+              className="block w-full text-center py-2 px-4 bg-red-700 text-white rounded-md hover:bg-red-800 transition"
+            >
+              Changer le rôle d&apos;un utilisateur
+            </Link>
+            <Link
               href="/admin/users"
               className="block w-full text-center py-2 px-4 bg-red-600 text-white rounded-md hover:bg-red-700 transition"
             >

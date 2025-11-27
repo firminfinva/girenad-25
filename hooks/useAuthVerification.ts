@@ -13,7 +13,7 @@ interface VerificationResult {
  * This ensures that role changes are detected even if user is already logged in
  */
 export function useAuthVerification(
-  requiredRole?: "ADMIN" | "MODERATOR" | "USER"
+  requiredRole?: "SUPERADMIN" | "ADMIN" | "MODERATOR" | "USER"
 ): VerificationResult {
   const { isAuthenticated, user, token, loading: authLoading, login } =
     useAuth();
@@ -70,12 +70,17 @@ export function useAuthVerification(
 
         // Check if required role is met
         if (requiredRole) {
-          if (requiredRole === "ADMIN" && data.user.role !== "ADMIN") {
+          if (requiredRole === "SUPERADMIN" && data.user.role !== "SUPERADMIN") {
+            router.push("/dashboard");
+            return;
+          }
+          if (requiredRole === "ADMIN" && data.user.role !== "SUPERADMIN" && data.user.role !== "ADMIN") {
             router.push("/dashboard");
             return;
           }
           if (
             requiredRole === "MODERATOR" &&
+            data.user.role !== "SUPERADMIN" &&
             data.user.role !== "ADMIN" &&
             data.user.role !== "MODERATOR"
           ) {

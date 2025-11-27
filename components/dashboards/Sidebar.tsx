@@ -9,7 +9,7 @@ interface SidebarItem {
   title: string;
   href: string;
   icon: string;
-  roles?: ("ADMIN" | "MODERATOR" | "USER")[];
+  roles?: ("SUPERADMIN" | "ADMIN" | "MODERATOR" | "USER")[];
 }
 
 const Sidebar: React.FC = () => {
@@ -73,6 +73,12 @@ const Sidebar: React.FC = () => {
       title: "Offres d'Emploi",
       href: "/offres",
       icon: "💼",
+      roles: ["USER"],
+    },
+    {
+      title: "Gestion des Rôles",
+      href: "/user-roles",
+      icon: "🔐",
       roles: ["USER"],
     },
   ];
@@ -188,14 +194,18 @@ const Sidebar: React.FC = () => {
                 <p className="text-xs text-gray-400 truncate mb-1">{user?.email}</p>
                 <span
                   className={`inline-block px-3 py-1 text-xs font-medium rounded-full ${
-                    user?.role === "ADMIN"
+                    user?.role === "SUPERADMIN"
+                      ? "bg-yellow-500/30 text-yellow-200 border border-yellow-500/50"
+                      : user?.role === "ADMIN"
                       ? "bg-red-500/30 text-red-200 border border-red-500/50"
                       : user?.role === "MODERATOR"
                       ? "bg-purple-500/30 text-purple-200 border border-purple-500/50"
                       : "bg-blue-500/30 text-blue-200 border border-blue-500/50"
                   }`}
                 >
-                  {user?.role === "ADMIN"
+                  {user?.role === "SUPERADMIN"
+                    ? "⭐ Super Admin"
+                    : user?.role === "ADMIN"
                     ? "👑 Administrateur"
                     : user?.role === "MODERATOR"
                     ? "🛡️ Modérateur"
