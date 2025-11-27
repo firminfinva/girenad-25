@@ -62,6 +62,12 @@ const Sidebar: React.FC = () => {
       icon: "📋",
       roles: ["ADMIN"],
     },
+    {
+      title: "Partenaires",
+      href: "/admin/partners",
+      icon: "🤝",
+      roles: ["ADMIN"],
+    },
     // User items
     {
       title: "Mes Activités",
@@ -156,7 +162,6 @@ const Sidebar: React.FC = () => {
             </div>
           </div>
 
-
           {/* Navigation Items */}
           <nav className="flex-1 overflow-y-auto p-4 space-y-1">
             {filteredItems.map((item) => (
@@ -191,7 +196,9 @@ const Sidebar: React.FC = () => {
                 <p className="text-sm font-semibold text-white truncate">
                   {user?.firstName} {user?.lastName}
                 </p>
-                <p className="text-xs text-gray-400 truncate mb-1">{user?.email}</p>
+                <p className="text-xs text-gray-400 truncate mb-1">
+                  {user?.email}
+                </p>
                 <span
                   className={`inline-block px-3 py-1 text-xs font-medium rounded-full ${
                     user?.role === "SUPERADMIN"

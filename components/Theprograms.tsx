@@ -45,22 +45,11 @@ const Theprograms: React.FC = () => {
   };
 
   if (loading) {
-    return (
-      <section
-        id="clients"
-        className={`${styles.paddingY} ${styles.flexCenter} flex-col relative`}
-      >
-        <div className="absolute z-[0] w-[60%] h-[60%] -right-[50%] rounded-full blue__gradient" />
-        <div className="w-full flex justify-between items-center md:flex-row flex-col sm:mb-10 mb-6 relative z-[1]">
-          <h1 className={`${styles.heading2} text-black md:text-white`}>
-            THE TEAM
-          </h1>
-        </div>
-        <div className="flex flex-wrap sm:justify-start gap-4 justify-center w-full feedback-container relative z-[1]">
-          <p className="text-white">Chargement...</p>
-        </div>
-      </section>
-    );
+    return null; // Hide section while loading
+  }
+
+  if (teamMembers.length === 0) {
+    return null; // Hide section if no team members
   }
 
   return (
@@ -75,23 +64,17 @@ const Theprograms: React.FC = () => {
         </h1>
       </div>
       <div className="flex flex-wrap sm:justify-start gap-4 justify-center w-full feedback-container relative z-[1]">
-        {teamMembers.length === 0 ? (
-          <p className="text-white text-center py-8">
-            Aucun membre de l'équipe pour le moment
-          </p>
-        ) : (
-          teamMembers.map((member) => (
-            <Programme
-              key={member.id}
-              id={member.id}
-              name={`${member.user.firstName} ${member.user.lastName}`}
-              title={member.role || ""}
-              content={member.bio || ""}
-              email={member.user.email || ""}
-              img={member.imageUrl || "/assets/default-avatar.png"}
-            />
-          ))
-        )}
+        {teamMembers.map((member) => (
+          <Programme
+            key={member.id}
+            id={member.id}
+            name={`${member.user.firstName} ${member.user.lastName}`}
+            title={member.role || ""}
+            content={member.bio || ""}
+            email={member.user.email || ""}
+            img={member.imageUrl || "/assets/default-avatar.png"}
+          />
+        ))}
       </div>
     </section>
   );

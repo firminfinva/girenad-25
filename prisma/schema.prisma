@@ -296,6 +296,20 @@ model ProjectFeaturedImage {
   @@map("project_featured_images")
 }
 
+model HomepagePartner {
+  id          String   @id @default(cuid())
+  name        String
+  logo        String?  // URL to logo image
+  website     String?  // Optional website URL
+  description String?  // Optional description
+  order       Int      @default(0)
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("homepage_partners")
+}
+
 // Enums
 enum UserRole {
   SUPERADMIN
