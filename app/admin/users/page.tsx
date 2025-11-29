@@ -20,7 +20,7 @@ interface User {
 }
 
 const UsersManagementPage: React.FC = () => {
-  const { token } = useAuth();
+  const { token, user } = useAuth();
   const router = useRouter();
   // Verify token and role from server (ensures role changes are detected)
   const { loading: verifying, isValid } = useAuthVerification("ADMIN");
@@ -59,7 +59,20 @@ const UsersManagementPage: React.FC = () => {
   };
 
   const handleUpdateRole = async (userId: string, newRole: string) => {
+    // Prevent admins from changing their own role
+    if (user && user.id === userId) {
+      const isCurrentUserAdmin = user.role === "ADMIN" || user.role === "SUPERADMIN";
+      const isNewRoleNonAdmin = newRole !== "ADMIN" && newRole !== "SUPERADMIN";
+      
+      if (isCurrentUserAdmin && isNewRoleNonAdmin) {
+        alert("Vous ne pouvez pas changer votre propre rôle d'administrateur");
+        fetchUsers(); // Refresh to reset the dropdown
+        return;
+      }
+    }
+
     if (!confirm(`Êtes-vous sûr de vouloir changer le rôle de cet utilisateur en ${newRole} ?`)) {
+      fetchUsers(); // Refresh to reset the dropdown
       return;
     }
 
@@ -78,13 +91,21 @@ const UsersManagementPage: React.FC = () => {
       } else {
         const data = await response.json();
         alert(data.error || "Erreur lors de la mise à jour");
+        fetchUsers(); // Refresh to reset the dropdown
       }
     } catch (err) {
       alert("Erreur de connexion");
+      fetchUsers(); // Refresh to reset the dropdown
     }
   };
 
   const handleToggleValidation = async (userId: string, currentStatus: boolean) => {
+    // Prevent admins from invalidating themselves
+    if (user && user.id === userId && currentStatus === true) {
+      alert("Vous ne pouvez pas invalider votre propre compte");
+      return;
+    }
+
     try {
       const response = await fetch(`/api/users/${userId}`, {
         method: "PATCH",
@@ -263,37 +284,73 @@ const UsersManagementPage: React.FC = () => {
                             </div>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            <select
-                              value={userItem.role}
-                              onChange={(e) =>
-                                handleUpdateRole(userItem.id, e.target.value)
-                              }
-                              className={`text-xs font-medium px-2 py-1 rounded ${getRoleBadgeColor(
-                                userItem.role
-                              )} border-0 focus:ring-2 focus:ring-green-500`}
-                            >
-                              <option value="USER">Utilisateur</option>
-                              <option value="MODERATOR">Modérateur</option>
-                              <option value="ADMIN">Administrateur</option>
-                              <option value="SUPERADMIN">Super Admin</option>
-                            </select>
+                            {user && user.id === userItem.id && (user.role === "ADMIN" || user.role === "SUPERADMIN") ? (
+                              <div className="flex flex-col">
+                                <select
+                                  value={userItem.role}
+                                  disabled
+                                  className={`text-xs font-medium px-2 py-1 rounded ${getRoleBadgeColor(
+                                    userItem.role
+                                  )} border-0 opacity-60 cursor-not-allowed`}
+                                  title="Vous ne pouvez pas modifier votre propre rôle"
+                                >
+                                  <option value="USER">Utilisateur</option>
+                                  <option value="MODERATOR">Modérateur</option>
+                                  <option value="ADMIN">Administrateur</option>
+                                  <option value="SUPERADMIN">Super Admin</option>
+                                </select>
+                                <span className="text-xs text-gray-500 mt-1">(Vous)</span>
+                              </div>
+                            ) : (
+                              <select
+                                value={userItem.role}
+                                onChange={(e) =>
+                                  handleUpdateRole(userItem.id, e.target.value)
+                                }
+                                className={`text-xs font-medium px-2 py-1 rounded ${getRoleBadgeColor(
+                                  userItem.role
+                                )} border-0 focus:ring-2 focus:ring-green-500`}
+                              >
+                                <option value="USER">Utilisateur</option>
+                                <option value="MODERATOR">Modérateur</option>
+                                <option value="ADMIN">Administrateur</option>
+                                <option value="SUPERADMIN">Super Admin</option>
+                              </select>
+                            )}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            <button
-                              onClick={() =>
-                                handleToggleValidation(
-                                  userItem.id,
+                            {user && user.id === userItem.id ? (
+                              <div className="flex flex-col">
+                                <button
+                                  disabled
+                                  className={`text-xs font-medium px-2 py-1 rounded ${
+                                    userItem.validated
+                                      ? "bg-green-100 text-green-800"
+                                      : "bg-yellow-100 text-yellow-800"
+                                  } opacity-60 cursor-not-allowed`}
+                                  title="Vous ne pouvez pas invalider votre propre compte"
+                                >
+                                  {userItem.validated ? "Validé" : "Non validé"}
+                                </button>
+                                <span className="text-xs text-gray-500 mt-1">(Vous)</span>
+                              </div>
+                            ) : (
+                              <button
+                                onClick={() =>
+                                  handleToggleValidation(
+                                    userItem.id,
+                                    userItem.validated
+                                  )
+                                }
+                                className={`text-xs font-medium px-2 py-1 rounded ${
                                   userItem.validated
-                                )
-                              }
-                              className={`text-xs font-medium px-2 py-1 rounded ${
-                                userItem.validated
-                                  ? "bg-green-100 text-green-800"
-                                  : "bg-yellow-100 text-yellow-800"
-                              } hover:opacity-80 transition`}
-                            >
-                              {userItem.validated ? "Validé" : "Non validé"}
-                            </button>
+                                    ? "bg-green-100 text-green-800"
+                                    : "bg-yellow-100 text-yellow-800"
+                                } hover:opacity-80 transition`}
+                              >
+                                {userItem.validated ? "Validé" : "Non validé"}
+                              </button>
+                            )}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                             {new Date(userItem.createdAt).toLocaleDateString(

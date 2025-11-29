@@ -24,6 +24,12 @@ const Sidebar: React.FC = () => {
       icon: "📊",
       roles: ["ADMIN", "MODERATOR", "USER"],
     },
+    {
+      title: "Travail Quotidien",
+      href: "/daily-work",
+      icon: "✅",
+      roles: ["ADMIN", "MODERATOR", "USER"],
+    },
     // Admin only items
     {
       title: "Projets",

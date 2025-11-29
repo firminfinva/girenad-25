@@ -17,7 +17,7 @@ model User {
   phone        String?
   organization String?
   password     String?
-  validated    Boolean  @default(true)
+  validated    Boolean  @default(false)
   role         UserRole @default(USER)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
@@ -28,8 +28,9 @@ model User {
   donations           Donation[]
   testimonials        Testimonial[]
   ActivityParticipant ActivityParticipant[]
-  OTP                 OTP?
+  OTP                 OTP[]
   teamMember          TeamMember?
+  dailyWork           DailyWork[]
 
   @@map("users")
 }
@@ -255,12 +256,14 @@ model Newsletter {
 }
 
 model OTP {
-  id        String   @id @default(cuid())
-  userId    String   @unique
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id        String    @id @default(cuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   otp       String
   expiresAt DateTime
-  createdAt DateTime @default(now())
+  used      Boolean   @default(false)
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
 
   @@map("otps")
 }
@@ -299,15 +302,32 @@ model ProjectFeaturedImage {
 model HomepagePartner {
   id          String   @id @default(cuid())
   name        String
-  logo        String?  // URL to logo image
-  website     String?  // Optional website URL
-  description String?  // Optional description
+  logo        String? // URL to logo image
+  website     String? // Optional website URL
+  description String? // Optional description
   order       Int      @default(0)
   active      Boolean  @default(true)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
   @@map("homepage_partners")
+}
+
+model DailyWork {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  completed   Boolean  @default(false)
+  workDate    DateTime @db.Date
+  completedAt DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("daily_work")
 }
 
 // Enums

@@ -28,9 +28,15 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Find OTP for this user
-    const storedOtp = await prisma.oTP.findUnique({
-      where: { userId: user.id },
+    // Find the most recent unused OTP for this user
+    const storedOtp = await prisma.oTP.findFirst({
+      where: {
+        userId: user.id,
+        used: false,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
     });
 
     // Verify OTP - strict check
@@ -55,9 +61,13 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // OTP is valid - delete it before generating token
-    await prisma.oTP.delete({
-      where: { userId: user.id },
+    // OTP is valid - mark it as used instead of deleting it (for statistics)
+    await prisma.oTP.update({
+      where: { id: storedOtp.id },
+      data: {
+        used: true,
+        usedAt: new Date(),
+      },
     });
 
     // Generate JWT token (only store userId)
@@ -70,22 +80,12 @@ export async function POST(request: NextRequest) {
       { expiresIn: "7d" }
     );
 
-    // Remove password from user data
-    const { password: _, ...userWithoutPassword } = user;
-
-    // Return success response with explicit status
+    // Return success response with token only
+    // User data will be fetched from backend using the token
     return NextResponse.json(
       {
         message: "OTP vérifié avec succès",
         token,
-        user: {
-          id: user.id,
-          email: user.email,
-          firstName: user.firstName,
-          lastName: user.lastName,
-          role: user.role,
-          validated: user.validated,
-        },
       },
       { status: 200 }
     );

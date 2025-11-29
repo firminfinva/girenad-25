@@ -168,9 +168,9 @@ const LoginPage: React.FC = () => {
       const data = await response.json();
 
       if (response.ok && response.status >= 200 && response.status < 300) {
-        if (data.token && data.user) {
-          // Login first to update auth context
-          login(data.token, data.user);
+        if (data.token) {
+          // Login with token only - user data will be fetched from backend
+          await login(data.token);
           // Immediately redirect to dashboard (full page reload ensures auth is set)
           window.location.href = "/dashboard";
           return; // Exit early to prevent any further execution

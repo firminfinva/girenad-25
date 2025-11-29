@@ -79,6 +79,30 @@ export async function PATCH(
       );
     }
 
+    // Prevent admins from invalidating or downgrading themselves
+    if (user.userId === params.id) {
+      // Prevent invalidating yourself
+      if (validated !== undefined && validated === false) {
+        return NextResponse.json(
+          { error: "Vous ne pouvez pas invalider votre propre compte" },
+          { status: 400 }
+        );
+      }
+
+      // Prevent changing your role to non-admin if you're an admin
+      if (role !== undefined) {
+        const isCurrentUserAdmin = user.role === "ADMIN" || user.role === "SUPERADMIN";
+        const isNewRoleNonAdmin = role !== "ADMIN" && role !== "SUPERADMIN";
+        
+        if (isCurrentUserAdmin && isNewRoleNonAdmin) {
+          return NextResponse.json(
+            { error: "Vous ne pouvez pas changer votre rôle d'administrateur" },
+            { status: 400 }
+          );
+        }
+      }
+    }
+
     // If email is being changed, check if it's already taken
     if (email && email !== targetUser.email) {
       const existingUser = await prisma.user.findUnique({

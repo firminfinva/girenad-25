@@ -8,7 +8,7 @@ import ModeratorDashboard from "@/components/dashboards/ModeratorDashboard";
 import AdminDashboard from "@/components/dashboards/AdminDashboard";
 
 const DashboardPage: React.FC = () => {
-  const { isAuthenticated, user, token, loading, login } = useAuth();
+  const { isAuthenticated, user, token, loading, refreshUser } = useAuth();
   const router = useRouter();
   const [verifying, setVerifying] = useState(true);
 
@@ -20,7 +20,7 @@ const DashboardPage: React.FC = () => {
           return;
         }
 
-        // Verify token and get user role from server
+        // Verify token and refresh user data from server
         try {
           const response = await fetch("/api/auth/verify", {
             method: "GET",
@@ -35,20 +35,8 @@ const DashboardPage: React.FC = () => {
             return;
           }
 
-          const data = await response.json();
-
-          // Verify role matches - if changed, update auth context
-          if (data.user && user && data.user.role !== user.role) {
-            // Role changed, update auth context with new role from server
-            console.warn("Role mismatch detected, updating user data");
-            login(token, {
-              id: data.user.id,
-              email: data.user.email,
-              firstName: user.firstName,
-              lastName: user.lastName,
-              role: data.user.role,
-            });
-          }
+          // Refresh user data from backend (always get latest)
+          await refreshUser();
         } catch (error) {
           console.error("Error verifying token:", error);
           router.push("/login");
@@ -60,7 +48,7 @@ const DashboardPage: React.FC = () => {
     };
 
     verifyTokenAndRole();
-  }, [isAuthenticated, token, loading, router, user]);
+  }, [isAuthenticated, token, loading, router, refreshUser]);
 
   if (loading || verifying) {
     return (

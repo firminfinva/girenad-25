@@ -50,23 +50,11 @@ export function useAuthVerification(
 
         const data = await response.json();
 
-        // Update user role from server (in case it changed)
-        if (data.user && user && data.user.role !== user.role) {
-          // Role changed, update auth context
-          console.warn("Role mismatch detected, updating user data");
-          if (login && token) {
-            // Update the user in context with new role from server
-            login(token, {
-              id: data.user.id,
-              email: data.user.email,
-              firstName: user.firstName,
-              lastName: user.lastName,
-              role: data.user.role,
-            });
-          }
+        // User data is always fetched from backend, so no need to update manually
+        // The AuthContext will automatically update user data from the verify endpoint
+        if (data.user) {
+          setUserRole(data.user.role);
         }
-
-        setUserRole(data.user.role);
 
         // Check if required role is met
         if (requiredRole) {

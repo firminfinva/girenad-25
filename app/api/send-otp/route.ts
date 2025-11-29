@@ -34,21 +34,17 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Delete any existing OTP for this user
-    await prisma.oTP.deleteMany({
-      where: { userId: user.id },
-    });
-
     // Generate 6-digit OTP
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     const expiresAt = new Date(Date.now() + 5 * 60 * 1000); // 5 minutes from now
 
-    // Create new OTP in database
+    // Create new OTP in database (keep old ones for statistics)
     await prisma.oTP.create({
       data: {
         userId: user.id,
         otp,
         expiresAt,
+        used: false,
       },
     });
 
