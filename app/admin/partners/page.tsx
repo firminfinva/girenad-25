@@ -163,7 +163,7 @@ const PartnersManagementPage: React.FC = () => {
                   {partners.map((partner) => (
                     <div
                       key={partner.id}
-                      className="bg-gray-50 rounded-lg p-6 border border-gray-200 hover:shadow-lg transition"
+                      className="bg-gray-50 rounded-lg p-6 border border-gray-200 hover:shadow-lg transition overflow-hidden flex flex-col"
                     >
                       <div className="flex items-center justify-between mb-4">
                         <button
@@ -205,13 +205,14 @@ const PartnersManagementPage: React.FC = () => {
                           href={partner.website}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-sm text-blue-600 hover:underline mb-4 block"
+                          className="text-sm text-blue-600 hover:underline mb-4 block break-all break-words overflow-hidden"
+                          style={{ wordBreak: 'break-all', overflowWrap: 'anywhere' }}
                         >
                           {partner.website}
                         </a>
                       )}
 
-                      <div className="flex gap-2 mt-4">
+                      <div className="flex gap-2 mt-auto pt-4">
                         <Link
                           href={`/admin/partners/${partner.id}/edit`}
                           className="flex-1 text-center bg-blue-600 text-white px-3 py-2 rounded-md hover:bg-blue-700 transition text-sm"
