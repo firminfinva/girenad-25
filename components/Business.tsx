@@ -11,9 +11,8 @@ const FeaturesCard: React.FC<FeatredCardProps> = ({
   index,
 }) => (
   <div
-    className={`flex flex-row p-6 rounded-[20px] ${
-      index !== features.length - 1 ? "mb-6" : "mb-0"
-    } feature-card`}
+    className={`flex flex-row p-6 rounded-[20px] ${index !== features.length - 1 ? "mb-6" : "mb-0"
+      } feature-card`}
   >
     <div
       className={`w-[64px] h-[64px] rounded-full bg-dimBlue ${styles.flexCenter}`}
@@ -31,24 +30,30 @@ const FeaturesCard: React.FC<FeatredCardProps> = ({
   </div>
 );
 const Business: React.FC = () => (
-  <section id="features" className={`${layout.section} flex`}>
-    <div className={layout.sectionInfo}>
-      <h2 className={styles.heading2}>
-        Conservation & Développement, <br className="sm:block hidden" />
-        <span className="text-[20px]">Gouvernance, Droits, Durabilité.</span>
-      </h2>
-      <p className={`${styles.paragraph} max-w-[470px] mt-5`}>
-        Notre mission est d'accompagner les communautés locales dans la gestion
-        durable des ressources naturelles. Nous travaillons à renforcer la
-        gouvernance locale, protéger la biodiversité et créer des moyens de
-        subsistance durables pour les populations du Nord-Kivu, tout en
-        préservant les écosystèmes fragiles de la région.
-      </p>
-    </div>
-    <div className={`${layout.sectionImg} flex-col`}>
-      {features.map((feature, index) => (
-        <FeaturesCard key={feature.id} {...feature} index={index} />
-      ))}
+  <section id="features" className={`relative w-full overflow-hidden`}>
+    {/* Dark Overlay - Full Width */}
+    <div className="absolute inset-0 bg-black/60 z-0" />
+
+    {/* Content Container - Constrained & Centered */}
+    <div className={`${layout.section} ${styles.boxWidth} mx-auto relative z-10 px-6 sm:px-16`}>
+      <div className={`${layout.sectionInfo}`}>
+        <h2 className={`${styles.heading2} text-white`}>
+          Conservation & Développement, <br className="sm:block hidden" />
+          <span className="text-[20px] text-white">Gouvernance, Droits, Durabilité.</span>
+        </h2>
+        <p className={`${styles.paragraph} max-w-[470px] mt-5 text-white`}>
+          Notre mission est d'accompagner les communautés locales dans la gestion
+          durable des ressources naturelles. Nous travaillons à renforcer la
+          gouvernance locale, protéger la biodiversité et créer des moyens de
+          subsistance durables pour les populations du Nord-Kivu, tout en
+          préservant les écosystèmes fragiles de la région.
+        </p>
+      </div>
+      <div className={`${layout.sectionImg} flex-col`}>
+        {features.map((feature, index) => (
+          <FeaturesCard key={feature.id} {...feature} index={index} />
+        ))}
+      </div>
     </div>
   </section>
 );

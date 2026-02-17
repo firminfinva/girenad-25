@@ -53,8 +53,8 @@ const Home: React.FC = () => {
             <Activities />
           </div>
         </div>
-        <div className={`bg-slate-700 ${styles.paddingX} ${styles.flexStart}`}>
-          <div className={`${styles.boxWidth}`}>
+        <div className={`bg-slate-700 w-full`}>
+          <div className="w-full">
             <Business />
           </div>
         </div>

@@ -34,7 +34,7 @@ export async function sendEmail({
   from?: string;
 }): Promise<void> {
   const mailOptions = {
-    from: from || process.env.SMTP_USER || "noreply@girenad.org",
+    from: from || process.env.GMAIL_USER || "noreply@girenad.org",
     to,
     subject,
     text,
