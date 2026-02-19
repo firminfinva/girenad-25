@@ -3,6 +3,24 @@ import { verifyToken } from "@/lib/auth";
 import { isAdmin } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 
+interface ProcessedOTP {
+  id: string;
+  userId: string;
+  user: {
+    id: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+  };
+  otp: string;
+  expiresAt: string;
+  createdAt: string;
+  used: boolean;
+  usedAt: string | null;
+  isExpired: boolean;
+  isActive: boolean;
+}
+
 export async function GET(request: NextRequest) {
   try {
     const user = await verifyToken(request);
@@ -92,9 +110,9 @@ export async function GET(request: NextRequest) {
     // Apply additional status filter if provided (for active/expired)
     let filteredOtps = processedOtps;
     if (status === "active") {
-      filteredOtps = processedOtps.filter((otp) => otp.isActive);
+      filteredOtps = processedOtps.filter((otp: ProcessedOTP) => otp.isActive);
     } else if (status === "expired") {
-      filteredOtps = processedOtps.filter((otp) => otp.isExpired && !otp.used);
+      filteredOtps = processedOtps.filter((otp: ProcessedOTP) => otp.isExpired && !otp.used);
     }
     // "used" and "unused" are already filtered in the where clause
 
