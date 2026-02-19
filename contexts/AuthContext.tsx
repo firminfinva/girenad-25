@@ -6,6 +6,7 @@ import {
   useEffect,
   ReactNode,
   useCallback,
+  useMemo,
 } from "react";
 
 export type UserRole = "SUPERADMIN" | "ADMIN" | "MODERATOR" | "USER";
@@ -91,7 +92,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [fetchUserData]);
 
-  const login = async (newToken: string) => {
+  const login = useCallback(async (newToken: string) => {
     setToken(newToken);
     localStorage.setItem("token", newToken);
     // Also set token in cookie for middleware access
@@ -101,15 +102,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     
     // Fetch user data from backend
     await fetchUserData(newToken);
-  };
+  }, [fetchUserData]);
 
-  const refreshUser = async () => {
+  const refreshUser = useCallback(async () => {
     if (token) {
       await fetchUserData(token);
     }
-  };
+  }, [token, fetchUserData]);
 
-  const logout = () => {
+  const logout = useCallback(() => {
     // Clear state
     setToken(null);
     setUser(null);
@@ -122,20 +123,23 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     } catch (error) {
       console.error("Error clearing localStorage:", error);
     }
-  };
+  }, []);
+
+  const contextValue = useMemo(
+    () => ({
+      user,
+      token,
+      isAuthenticated: !!token && !!user,
+      login,
+      logout,
+      loading,
+      refreshUser,
+    }),
+    [user, token, login, logout, loading, refreshUser]
+  );
 
   return (
-    <AuthContext.Provider
-      value={{
-        user,
-        token,
-        isAuthenticated: !!token && !!user,
-        login,
-        logout,
-        loading,
-        refreshUser,
-      }}
-    >
+    <AuthContext.Provider value={contextValue}>
       {children}
     </AuthContext.Provider>
   );

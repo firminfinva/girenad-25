@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 
@@ -35,7 +35,7 @@ interface Project {
   galleries: Gallery[];
 }
 
-const ProjetPage: React.FC = () => {
+function ProjetContent() {
   const searchParams = useSearchParams();
   const projectId = searchParams.get("id");
 
@@ -345,6 +345,25 @@ const ProjetPage: React.FC = () => {
         </div>
       </div>
     </div>
+  );
+}
+
+function LoadingFallback() {
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 flex items-center justify-center">
+      <div className="text-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
+        <p className="text-gray-600">Chargement du projet...</p>
+      </div>
+    </div>
+  );
+}
+
+const ProjetPage: React.FC = () => {
+  return (
+    <Suspense fallback={<LoadingFallback />}>
+      <ProjetContent />
+    </Suspense>
   );
 };
 
