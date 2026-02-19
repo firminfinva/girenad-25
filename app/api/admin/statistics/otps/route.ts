@@ -72,7 +72,7 @@ export async function GET(request: NextRequest) {
 
     // Filter by status (active/expired) and add isExpired flag
     const now = new Date();
-    const processedOtps = otps.map((otp) => {
+    const processedOtps = otps.map((otp: any) => {
       const isExpired = new Date(otp.expiresAt) < now;
       const isActive = !otp.used && !isExpired;
       return {
