@@ -69,7 +69,7 @@ export async function GET(request: NextRequest) {
       },
     });
 
-    const processedDailyWork = dailyWork.map((work) => ({
+    const processedDailyWork = dailyWork.map((work: any) => ({
       id: work.id,
       title: work.title,
       description: work.description,
