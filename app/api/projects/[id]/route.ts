@@ -108,7 +108,7 @@ export async function PATCH(
     } = body;
 
     // Start a transaction to update project and related entities
-    const project = await prisma.$transaction(async (tx) => {
+    const project = await prisma.$transaction(async (tx: any) => {
       // Update project basic info
       const updatedProject = await tx.project.update({
         where: { id: params.id },
