@@ -5,13 +5,17 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
+    "build:prod": "prisma generate && next build",
+    "start": "next run start",
+    "start:prod": "node scripts/pre-start-check.js",
+    "start:safe": "prisma generate && node scripts/pre-start-check.js",
     "lint": "next lint",
     "postinstall": "prisma generate",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
     "db:push": "prisma db push",
-    "db:studio": "prisma studio"
+    "db:studio": "prisma studio",
+    "deploy": "pm2 stop girenad || true && npm run build:prod && pm2 start ecosystem.config.js"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.0.1",
