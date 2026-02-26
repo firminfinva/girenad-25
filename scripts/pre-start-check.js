@@ -85,15 +85,28 @@ function checkEnvironmentVariables() {
 async function checkDatabaseConnection() {
   log('🔍 Checking database connection...', 'cyan');
   
-  // Create a temporary script to test database connection
+  // Create a temporary script to test database connection with the adapter
   const testScript = `
     const { PrismaClient } = require('@prisma/client');
-    const prisma = new PrismaClient();
+    const { PrismaPg } = require('@prisma/adapter-pg');
+    const { Pool } = require('pg');
+    
+    const connectionString = process.env.DATABASE_URL;
+    if (!connectionString) {
+      console.error('DATABASE_URL not set');
+      process.exit(1);
+    }
+    
+    const pool = new Pool({ connectionString });
+    const adapter = new PrismaPg(pool);
+    const prisma = new PrismaClient({ adapter });
+    
     async function test() {
       try {
         await prisma.$connect();
         console.log('SUCCESS');
         await prisma.$disconnect();
+        pool.end();
         process.exit(0);
       } catch (e) {
         console.error(e.message);
