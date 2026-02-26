@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "build:prod": "prisma generate && next build",
-    "start": "next run start",
+    "start": "next start",
     "start:prod": "node scripts/pre-start-check.js",
     "start:safe": "prisma generate && node scripts/pre-start-check.js",
     "lint": "next lint",
