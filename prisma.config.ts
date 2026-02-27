@@ -1,13 +1,3 @@
-import { defineConfig, env } from "prisma/config";
-import { config } from "dotenv";
-
-// Load environment variables from .env file
-config();
-
-export default defineConfig({
-  schema: "./prisma/schema.prisma",
-  datasource: {
-    url: env("DATABASE_URL"),
-  },
-});
+// This file has been removed - Prisma configuration is defined in prisma/schema.prisma
+// and environment variables should be set in .env or the deployment platform
 
