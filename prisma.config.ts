@@ -1,3 +1,15 @@
-// This file has been removed - Prisma configuration is defined in prisma/schema.prisma
-// and environment variables should be set in .env or the deployment platform
+import { defineConfig, env } from "prisma/config";
+import { config } from "dotenv";
+
+// Load `.env` when running Prisma commands locally
+config();
+
+export default defineConfig({
+  // path to your schema relative to project root
+  schema: "prisma/schema.prisma",
+  datasource: {
+    // connection URL for migrations and introspection
+    url: env("DATABASE_URL"),
+  },
+});
 
