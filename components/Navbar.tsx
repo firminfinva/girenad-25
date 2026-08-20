@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { close, logo, menu } from "@/public/assets";
 import thelogo from "@/public/assets/logo.png";
@@ -12,6 +13,27 @@ const Navbar: React.FC = () => {
   const router = useRouter();
   const pathname = usePathname();
   const [toggle, setToggle] = useState(false);
+  const [hasCvProjects, setHasCvProjects] = useState(true);
+  useEffect(() => {
+    let mounted = true;
+    const checkCvProjects = async () => {
+      try {
+        const res = await fetch(`/api/projects?status=COMPLETED`);
+        if (!res.ok) return;
+        const data = await res.json();
+        const projectsWithCV = data.filter(
+          (p: any) => p.actualResults || p.funder || p.amount || p.challenges || p.perspectives
+        );
+        if (mounted) setHasCvProjects(projectsWithCV.length > 0);
+      } catch (err) {
+        // keep default true on errors
+      }
+    };
+    checkCvProjects();
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   const handleLogout = () => {
     logout();
@@ -24,33 +46,36 @@ const Navbar: React.FC = () => {
         <Image src={thelogo} alt="girenad" width={160} height={64} />
       </a>
       <ul className="list-none sm:flex hidden justify-end items-center flex-1">
-        {navLinks.map((nav, index) => (
-          <li
-            key={nav.id}
-            className={`font-poppins font-normal cursor-pointer text-[16px] text-black ${
-              index === navLinks.length - 1 ? "mr-0" : "mr-10"
-            }`}
-          >
-            {nav.link.startsWith("#") ? (
-              <a
-                href={pathname === "/" ? nav.link : `/${nav.link}`}
-                onClick={(e) => {
-                  if (pathname === "/") {
-                    e.preventDefault();
-                    const element = document.querySelector(nav.link);
-                    if (element) {
-                      element.scrollIntoView({ behavior: "smooth" });
+        {navLinks.map((nav, index) => {
+          if (nav.id === "cv-organisationnel" && !hasCvProjects) return null;
+          return (
+            <li
+              key={nav.id}
+              className={`font-poppins font-normal cursor-pointer text-[16px] text-black ${
+                index === navLinks.length - 1 ? "mr-0" : "mr-10"
+              }`}
+            >
+              {nav.link.startsWith("#") ? (
+                <a
+                  href={pathname === "/" ? nav.link : `/${nav.link}`}
+                  onClick={(e) => {
+                    if (pathname === "/") {
+                      e.preventDefault();
+                      const element = document.querySelector(nav.link);
+                      if (element) {
+                        element.scrollIntoView({ behavior: "smooth" });
+                      }
                     }
-                  }
-                }}
-              >
-                {nav.title}
-              </a>
-            ) : (
-              <a href={nav.link}>{nav.title}</a>
-            )}
-          </li>
-        ))}
+                  }}
+                >
+                  {nav.title}
+                </a>
+              ) : (
+                <a href={nav.link}>{nav.title}</a>
+              )}
+            </li>
+          );
+        })}
         {isAuthenticated ? (
           <>
             <li className="font-poppins font-normal cursor-pointer text-[16px] text-black ml-10">
@@ -91,33 +116,36 @@ const Navbar: React.FC = () => {
             p-6 bg-white absolute top-20 ring-0 my-[0.6rem] w-full rounded-xl sidebar`}
         >
           <ul className="list-none flex flex-col justify-end px-[50px] items-left flex-1">
-            {navLinks.map((nav, index) => (
-              <li
-                key={nav.id}
-                className={`font-poppins font-normal cursor-pointer text-[23px] text-black ${
-                  index === navLinks.length - 1 ? "mr-0" : "mb-4"
-                }`}
-              >
-                {nav.link.startsWith("#") ? (
-                  <a
-                    href={pathname === "/" ? nav.link : `/${nav.link}`}
-                    onClick={(e) => {
-                      if (pathname === "/") {
-                        e.preventDefault();
-                        const element = document.querySelector(nav.link);
-                        if (element) {
-                          element.scrollIntoView({ behavior: "smooth" });
+            {navLinks.map((nav, index) => {
+              if (nav.id === "cv-organisationnel" && !hasCvProjects) return null;
+              return (
+                <li
+                  key={nav.id}
+                  className={`font-poppins font-normal cursor-pointer text-[23px] text-black ${
+                    index === navLinks.length - 1 ? "mr-0" : "mb-4"
+                  }`}
+                >
+                  {nav.link.startsWith("#") ? (
+                    <a
+                      href={pathname === "/" ? nav.link : `/${nav.link}`}
+                      onClick={(e) => {
+                        if (pathname === "/") {
+                          e.preventDefault();
+                          const element = document.querySelector(nav.link);
+                          if (element) {
+                            element.scrollIntoView({ behavior: "smooth" });
+                          }
                         }
-                      }
-                    }}
-                  >
-                    {nav.title}
-                  </a>
-                ) : (
-                  <a href={nav.link}>{nav.title}</a>
-                )}
-              </li>
-            ))}
+                      }}
+                    >
+                      {nav.title}
+                    </a>
+                  ) : (
+                    <a href={nav.link}>{nav.title}</a>
+                  )}
+                </li>
+              );
+            })}
             {isAuthenticated ? (
               <>
                 <li className="font-poppins font-normal cursor-pointer text-[23px] text-black mb-4">

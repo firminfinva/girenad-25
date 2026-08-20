@@ -371,3 +371,28 @@ enum ContactStatus {
   READ
   RESPONDED
 }
+
+model JobOffer {
+  id                       String   @id @default(uuid())
+  createdAt                DateTime @default(now())
+  title                    String
+  referenceNumber          String?  
+  contractType             String?
+  vacanciesCount           Int?
+  location                 String?
+  duration                 String?
+  recruitmentType          String?
+  startDate                String?
+  organizationDescription  String?
+  projectDescription       String?
+  positionObjective        String?
+  responsibilities         Json?    // array of strings or rich text
+  requirements             Json?    // array of strings or rich text
+  applicationDocuments     Json?    // array of strings
+  submissionDeadline       DateTime?
+  submissionEmail          String?
+  emailSubjectFormat       String?
+  pdfUrl                   String?
+
+  @@map("job_offers")
+}

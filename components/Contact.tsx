@@ -67,7 +67,7 @@ const Contact: React.FC = () => (
             href="tel:+243998384839"
             className="text-lg font-semibold underline hover:text-yellow-300 transition"
           >
-            +243 998 384 839
+            +243 994 065 006
           </a>
         </div>
 
@@ -108,17 +108,17 @@ const Contact: React.FC = () => (
             />
           </svg>
           <a
-            href="mailto:girenadslab@gmail.com"
+            href="mailto: girenadasbl@gmail.com"
             className="text-lg font-semibold underline hover:text-yellow-300 transition"
           >
-            girenadslab@gmail.com
+            girenadasbl@gmail.com
           </a>
         </div>
       </div>
 
       {/* Bouton WhatsApp */}
       <a
-        href="https://wa.me/+243998384839"
+        href="https://wa.me/+243994065006"
         target="_blank"
         rel="noopener noreferrer"
         className="inline-flex items-center justify-center gap-2 px-4 py-2 mt-4 bg-green-500 hover:bg-green-600 transition text-white rounded-lg text-sm font-medium shadow-lg"
