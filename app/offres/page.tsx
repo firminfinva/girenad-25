@@ -1,129 +1,58 @@
-"use client";
-
-import React, { useState } from "react";
+import prisma from "@/lib/prisma";
+import Link from "next/link";
 import styles from "@styles/JobOffers.module.css";
-import jobOffers from "@constants/jobsTable";
 
-const JobOffers = () => {
-  const [filter, setFilter] = useState<"all" | "new" | "expired">("all");
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5; // Number of items to display per page
-
-  // Filter job offers based on the selected filter
-  const filteredOffers = jobOffers.filter((offer) => {
-    const currentDate = new Date();
-    const offerDate = new Date(offer.expiryDate);
-
-    if (filter === "new") {
-      return offerDate > currentDate; // Show only new offers
-    } else if (filter === "expired") {
-      return offerDate <= currentDate; // Show only expired offers
-    } else {
-      return true; // Show all offers
-    }
+export default async function JobOffersPage() {
+  const offers = await prisma.jobOffer.findMany({
+    orderBy: { createdAt: "desc" },
   });
-
-  // Calculate the current page's offers
-  const indexOfLastOffer = currentPage * itemsPerPage;
-  const indexOfFirstOffer = indexOfLastOffer - itemsPerPage;
-  const currentOffers = filteredOffers.slice(
-    indexOfFirstOffer,
-    indexOfLastOffer
-  );
-
-  // Handle page change
-  const handlePageChange = (pageNumber: number) => {
-    setCurrentPage(pageNumber);
-  };
-
-  // Calculate total pages
-  const totalPages = Math.ceil(filteredOffers.length / itemsPerPage);
 
   return (
     <div className={styles.container}>
-      {/* Sidebar Filters */}
       <div className={styles.sidebar}>
         <h2>Filtres</h2>
         <div className={styles.sidebarbutton}>
-          <button
-            className={`${styles.filterButton} ${
-              filter === "all" ? styles.active : ""
-            }`}
-            onClick={() => setFilter("all")}
-          >
+          <button className={`${styles.filterButton} ${styles.active}`} type="button">
             Tout
           </button>
-          <button
-            className={`${styles.filterButton} ${
-              filter === "new" ? styles.active : ""
-            }`}
-            onClick={() => setFilter("new")}
-          >
-            Nouvelles Offres
-          </button>
-          <button
-            className={`${styles.filterButton} ${
-              filter === "expired" ? styles.active : ""
-            }`}
-            onClick={() => setFilter("expired")}
-          >
-            Offres Expirées
-          </button>
         </div>
       </div>
 
-      {/* Job Offers */}
       <div className={styles.offers}>
-        {currentOffers.length > 0 ? (
-          currentOffers.map((offer) => (
-            <>
-              <div key={offer.id} className={styles.offerCard}>
-                <a href={`/offres/${offer.id}`}>
+        {offers.length > 0 ? (
+          offers.map((offer) => (
+            <div key={offer.id} className={styles.offerCard}>
+              <div className="flex items-center justify-between">
+                <Link href={`/offers/${offer.id}`}>
                   <h2 className={styles.cardTitle}>{offer.title}</h2>
-                </a>
-                {/* <p className={styles.cardDescription}>{offer.description}</p> */}
-                <p className={styles.cardExpiry}>
-                  <strong>Date d'expiration:</strong>{" "}
-                  {new Date(offer.expiryDate).toLocaleDateString()}
-                </p>
+                </Link>
+                <div className="flex gap-2">
+                  {offer.pdfUrl && (
+                    <a
+                      href={offer.pdfUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      download
+                      className="px-2 py-1 border rounded text-sm"
+                    >
+                      Télécharger PDF
+                    </a>
+                  )}
+                </div>
               </div>
-            </>
+
+              <p className={styles.cardExpiry}>
+                <strong>Date d'expiration:</strong>{" "}
+                {offer.submissionDeadline
+                  ? new Date(offer.submissionDeadline).toLocaleDateString()
+                  : "-"}
+              </p>
+            </div>
           ))
         ) : (
-          <p>Aucune offre disponible pour le filtre sélectionné.</p>
+          <p>Aucune offre disponible pour le moment.</p>
         )}
-        <div className={styles.pagination}>
-          <button
-            className={styles.pageButton}
-            disabled={currentPage === 1}
-            onClick={() => handlePageChange(currentPage - 1)}
-          >
-            Précédent
-          </button>
-          {Array.from({ length: totalPages }, (_, index) => (
-            <button
-              key={index}
-              className={`${styles.pageButton} ${
-                currentPage === index + 1 ? styles.active : ""
-              }`}
-              onClick={() => handlePageChange(index + 1)}
-            >
-              {index + 1}
-            </button>
-          ))}
-          <button
-            className={styles.pageButton}
-            disabled={currentPage === totalPages}
-            onClick={() => handlePageChange(currentPage + 1)}
-          >
-            Suivant
-          </button>
-        </div>
       </div>
-
-      {/* Pagination */}
     </div>
   );
-};
-
-export default JobOffers;
+}

@@ -48,9 +48,9 @@ export const navLinks = [
   //   link: "#partenaires",
   // },
   {
-    id: "contact",
-    title: "Contact",
-    link: "#contact",
+    id: "offers",
+    title: "Nos offres",
+    link: "/offers",
   },
   // {
   //   id: "don",

@@ -3,10 +3,13 @@
 import React from "react";
 import { useParams } from "next/navigation"; // Using Next.js's useParams for navigation
 import jobOffers from "@constants/jobsTable"; // Import job offers data
+import { useAuth } from "@/contexts/AuthContext";
+import Link from "next/link";
 
 const JobOfferPage = () => {
   const { Id } = useParams(); // Get the job offer ID from the URL
   const jobOffer = jobOffers.find((offer) => offer.id.toString() === Id); // Find the specific job offer by ID
+  const { user } = useAuth();
 
   if (!jobOffer) {
     return (
@@ -16,6 +19,19 @@ const JobOfferPage = () => {
     ); // If the job offer doesn't exist
   }
 
+  const publicUrl = typeof window !== "undefined" ? `${window.location.origin}/offers/${Id}` : `/offers/${Id}`;
+
+  const copyPublicLink = async () => {
+    try {
+      await navigator.clipboard.writeText(publicUrl);
+      alert("Lien public copié");
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const canEdit = user && (user.role === "ADMIN" || user.role === "SUPERADMIN");
+
   return (
     <div className="job-offer-page container mx-auto p-10 bg-white rounded-lg shadow-md">
       <header className="text-center mb-6">
@@ -24,6 +40,17 @@ const JobOfferPage = () => {
         </h1>
         <p className="text-lg text-gray-600 mt-2">{jobOffer.location}</p>
       </header>
+
+      <div className="mb-4 flex gap-3 justify-center">
+        <button onClick={copyPublicLink} className="px-3 py-2 border rounded">
+          Copier le lien public
+        </button>
+        {canEdit && (
+          <Link href={`/admin/offers/${Id}`} className="px-3 py-2 bg-green-600 text-white rounded">
+            Éditer (admin)
+          </Link>
+        )}
+      </div>
 
       <section className="mb-6">
         <h2 className="text-xl font-semibold text-gray-800">
@@ -92,12 +119,37 @@ const JobOfferPage = () => {
         </p>
       </section>
 
+      {((jobOffer.applicationDocuments && jobOffer.applicationDocuments.length > 0) || typeof jobOffer.applicationDocuments === 'string') && (
+        <section className="mb-6">
+          <h2 className="text-xl font-semibold text-gray-800">Documents de candidature</h2>
+          <ul className="list-disc pl-5 mt-2 text-gray-600">
+            {(Array.isArray(jobOffer.applicationDocuments)
+              ? jobOffer.applicationDocuments
+              : String(jobOffer.applicationDocuments).split(/\n+/).map(s => s.trim()).filter(Boolean)
+            ).map((doc, index) => (
+              <li key={index}>{doc}</li>
+            ))}
+          </ul>
+        </section>
+      )}
+
       <section className="mb-6 p-4 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-800">
         <p className="text-lg font-semibold">
           <strong>Note:</strong> Tous les documents doivent être soumis sous
           forme de lien, tel que Google Docs ou tout autre lien de partage.
         </p>
       </section>
+
+      {jobOffer.pdfUrl && (
+        <section className="mb-6">
+          <h2 className="text-xl font-semibold text-gray-800">Télécharger le PDF</h2>
+          <div className="mt-2 p-4 border rounded bg-gray-50 text-center">
+            <a href={jobOffer.pdfUrl} target="_blank" rel="noopener noreferrer" download className="px-4 py-2 bg-blue-600 text-white rounded inline-block">
+              Télécharger le PDF
+            </a>
+          </div>
+        </section>
+      )}
 
       <footer className="text-center mt-6 text-gray-500">
         <p>

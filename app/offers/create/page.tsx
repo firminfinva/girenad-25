@@ -1,8 +1,10 @@
 "use client";
+
 import React, { useState } from "react";
 import { useAuthVerification } from "@/hooks/useAuthVerification";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
+import Sidebar from "@/components/dashboards/Sidebar";
 
 export default function CreateOfferPage() {
   const { loading: authLoading } = useAuthVerification("ADMIN");
@@ -118,8 +120,8 @@ export default function CreateOfferPage() {
       const json = await res.json();
       if (!res.ok) throw new Error(json?.error || "Erreur lors de la création");
       setToast("Offre publiée.");
-      // redirect to detail
-      router.push(`/offers/${json.offer.id}`);
+      // redirect to admin list or detail
+      router.push(`/admin/offers`);
     } catch (err: any) {
       setToast(err?.message || "Erreur lors de la publication");
     } finally {
@@ -130,64 +132,77 @@ export default function CreateOfferPage() {
   if (authLoading) return <div className="p-6">Loading...</div>;
 
   return (
-    <div className="max-w-3xl mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-4">Créer une offre d'emploi</h1>
+    <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-purple-50 flex overflow-x-hidden">
+      <Sidebar />
+      <main className="flex-1 lg:ml-64 min-h-screen w-0 overflow-x-hidden">
+        <div className="p-4 sm:p-6 lg:p-8 w-full max-w-4xl mx-auto">
+          <div className="bg-white rounded-xl shadow-2xl p-6 sm:p-8 w-full">
+            <h1 className="text-2xl font-bold mb-4">Créer une offre d'emploi</h1>
 
-      <section className="mb-6">
-        <h2 className="font-semibold">Option A — Importer depuis PDF</h2>
-        <div className="mt-2">
-          <input
-            type="file"
-            accept="application/pdf"
-            onChange={(e) => setPdfFile(e.target.files?.[0] ?? null)}
-          />
-          <button onClick={handleUploadPdf} disabled={loading} className="ml-2 px-3 py-1 bg-blue-600 text-white rounded">
-            {loading ? "Uploading..." : "Upload & Parse PDF"}
-          </button>
-          {pdfUrl && (
-            <div className="mt-2 text-sm">PDF uploaded: <a href={pdfUrl} target="_blank" rel="noreferrer" className="underline">Open</a></div>
-          )}
+            <section className="mb-6">
+              <h2 className="font-semibold">Option B — Saisie manuelle</h2>
+              <div className="grid grid-cols-1 gap-3">
+                <input placeholder="Titre de l'offre" value={title} onChange={(e)=>setTitle(e.target.value)} className="border p-2" />
+                <input placeholder="Numéro de référence" value={referenceNumber} onChange={(e)=>setReferenceNumber(e.target.value)} className="border p-2" />
+                <input placeholder="Type de contrat" value={contractType} onChange={(e)=>setContractType(e.target.value)} className="border p-2" />
+                <input placeholder="Lieu" value={location} onChange={(e)=>setLocation(e.target.value)} className="border p-2" />
+                <input type="number" placeholder="Nombre de postes" value={String(vacanciesCount)} onChange={(e)=>setVacanciesCount(Number(e.target.value))} className="border p-2" />
+                <input placeholder="Durée" value={duration} onChange={(e)=>setDuration(e.target.value)} className="border p-2" />
+                <input placeholder="Date de début" value={startDate} onChange={(e)=>setStartDate(e.target.value)} className="border p-2" />
+              </div>
+
+              <div className="mt-4">
+                <textarea placeholder="Présentation de l'organisation" value={organizationDescription} onChange={(e)=>setOrganizationDescription(e.target.value)} className="w-full border p-2 h-24" />
+                <textarea placeholder="Contexte du projet" value={projectDescription} onChange={(e)=>setProjectDescription(e.target.value)} className="w-full border p-2 h-24 mt-2" />
+                <textarea placeholder="Objectif du poste" value={positionObjective} onChange={(e)=>setPositionObjective(e.target.value)} className="w-full border p-2 h-20 mt-2" />
+              </div>
+
+              <div className="mt-4 grid grid-cols-1 gap-2">
+                <label className="font-medium">Principales responsabilités (une par ligne)</label>
+                <textarea value={responsibilities} onChange={(e)=>setResponsibilities(e.target.value)} className="w-full border p-2 h-32" />
+
+                <label className="font-medium">Exigences (une par ligne)</label>
+                <textarea value={requirements} onChange={(e)=>setRequirements(e.target.value)} className="w-full border p-2 h-32" />
+              </div>
+
+              <div className="mt-4 grid grid-cols-1 gap-2">
+                <label className="font-medium">Date d'expiration de l'offre</label>
+                <input type="date" value={submissionDeadline} onChange={(e)=>setSubmissionDeadline(e.target.value)} className="border p-2" />
+
+                <label className="font-medium mt-2">PDF de l'offre (détails complémentaires)</label>
+                <input
+                  type="file"
+                  accept="application/pdf"
+                  onChange={(e) => setPdfFile(e.target.files?.[0] ?? null)}
+                  className="border p-2"
+                />
+                <button
+                  type="button"
+                  onClick={handleUploadPdf}
+                  disabled={loading}
+                  className="px-3 py-2 bg-blue-600 text-white rounded disabled:opacity-60"
+                >
+                  {loading ? "Téléchargement..." : "Téléverser le PDF"}
+                </button>
+                {pdfUrl && (
+                  <div className="text-sm text-gray-700">
+                    PDF ajouté : <a href={pdfUrl} target="_blank" rel="noreferrer" className="underline text-blue-600">Ouvrir</a>
+                  </div>
+                )}
+
+                <input placeholder="Email de soumission" value={submissionEmail} onChange={(e)=>setSubmissionEmail(e.target.value)} className="border p-2" />
+                <input placeholder="Format sujet email" value={emailSubjectFormat} onChange={(e)=>setEmailSubjectFormat(e.target.value)} className="border p-2" />
+              </div>
+
+              <div className="mt-6">
+                <button onClick={handlePublish} disabled={loading} className="px-4 py-2 bg-green-600 text-white rounded">{loading?"Publishing...":"Publish Offer"}</button>
+              </div>
+            </section>
+
+            {toast && <div className="fixed bottom-4 right-4 bg-gray-800 text-white px-4 py-2 rounded">{toast}</div>}
+          </div>
         </div>
-      </section>
-
-      <section className="mb-6">
-        <h2 className="font-semibold">Option B — Saisie manuelle</h2>
-        <div className="grid grid-cols-1 gap-3">
-          <input placeholder="Titre de l'offre" value={title} onChange={(e)=>setTitle(e.target.value)} className="border p-2" />
-          <input placeholder="Numéro de référence" value={referenceNumber} onChange={(e)=>setReferenceNumber(e.target.value)} className="border p-2" />
-          <input placeholder="Type de contrat" value={contractType} onChange={(e)=>setContractType(e.target.value)} className="border p-2" />
-          <input placeholder="Lieu" value={location} onChange={(e)=>setLocation(e.target.value)} className="border p-2" />
-          <input type="number" placeholder="Nombre de postes" value={String(vacanciesCount)} onChange={(e)=>setVacanciesCount(Number(e.target.value))} className="border p-2" />
-          <input placeholder="Durée" value={duration} onChange={(e)=>setDuration(e.target.value)} className="border p-2" />
-          <input placeholder="Date de début" value={startDate} onChange={(e)=>setStartDate(e.target.value)} className="border p-2" />
-        </div>
-
-        <div className="mt-4">
-          <textarea placeholder="Présentation de l'organisation" value={organizationDescription} onChange={(e)=>setOrganizationDescription(e.target.value)} className="w-full border p-2 h-24" />
-          <textarea placeholder="Contexte du projet" value={projectDescription} onChange={(e)=>setProjectDescription(e.target.value)} className="w-full border p-2 h-24 mt-2" />
-          <textarea placeholder="Objectif du poste" value={positionObjective} onChange={(e)=>setPositionObjective(e.target.value)} className="w-full border p-2 h-20 mt-2" />
-        </div>
-
-        <div className="mt-4 grid grid-cols-1 gap-2">
-          <label className="font-medium">Principales responsabilités (une par ligne)</label>
-          <textarea value={responsibilities} onChange={(e)=>setResponsibilities(e.target.value)} className="w-full border p-2 h-32" />
-
-          <label className="font-medium">Exigences (une par ligne)</label>
-          <textarea value={requirements} onChange={(e)=>setRequirements(e.target.value)} className="w-full border p-2 h-32" />
-        </div>
-
-        <div className="mt-4 grid grid-cols-1 gap-2">
-          <input type="date" value={submissionDeadline} onChange={(e)=>setSubmissionDeadline(e.target.value)} className="border p-2" />
-          <input placeholder="Email de soumission" value={submissionEmail} onChange={(e)=>setSubmissionEmail(e.target.value)} className="border p-2" />
-          <input placeholder="Format sujet email" value={emailSubjectFormat} onChange={(e)=>setEmailSubjectFormat(e.target.value)} className="border p-2" />
-        </div>
-
-        <div className="mt-6">
-          <button onClick={handlePublish} disabled={loading} className="px-4 py-2 bg-green-600 text-white rounded">{loading?"Publishing...":"Publish Offer"}</button>
-        </div>
-      </section>
-
-      {toast && <div className="fixed bottom-4 right-4 bg-gray-800 text-white px-4 py-2 rounded">{toast}</div>}
+      </main>
     </div>
   );
 }

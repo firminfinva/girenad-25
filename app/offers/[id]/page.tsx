@@ -22,13 +22,9 @@ export default async function OfferDetail({ params }: Props) {
           <h1 className="text-3xl font-bold">{offer.title}</h1>
           <p className="text-sm text-gray-600">{offer.referenceNumber}</p>
         </div>
-        <div className="flex gap-2">
-          {offer.pdfUrl && (
-            <a href={offer.pdfUrl} target="_blank" rel="noreferrer" className="px-3 py-1 bg-gray-200 rounded">Download Original PDF</a>
-          )}
-          <button className="px-3 py-1 bg-blue-600 text-white rounded">Apply Now</button>
-        </div>
       </header>
+
+      {/* PDF download is shown in a fixed bottom bar for all offer detail pages */}
 
       <section className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="md:col-span-2">
@@ -81,9 +77,33 @@ export default async function OfferDetail({ params }: Props) {
             <div><strong>Duration:</strong> {offer.duration || "-"}</div>
             <div><strong>Recruitment Type:</strong> {offer.recruitmentType || "-"}</div>
             <div><strong>Start Date:</strong> {offer.startDate || "-"}</div>
+            {offer.pdfUrl && (
+              <div className="mt-2 text-sm">
+                <strong>Document offert:</strong>
+                <div className="text-xs text-gray-600">PDF disponible</div>
+              </div>
+            )}
           </dl>
         </aside>
       </section>
+
+      {offer.pdfUrl && (
+        <section className="mb-6">
+          <h3 className="font-semibold text-blue-900">Document de l'offre</h3>
+          <p className="mt-2 text-sm text-blue-800">Pour plus de détails, téléchargez le PDF officiel de cette offre.</p>
+          <div className="mt-4">
+            <a
+              href={offer.pdfUrl}
+              target="_blank"
+              rel="noreferrer"
+              download
+              className="inline-block px-4 py-3 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+            >
+              Télécharger le PDF de l'offre
+            </a>
+          </div>
+        </section>
+      )}
     </div>
   );
 }

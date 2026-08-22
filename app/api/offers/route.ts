@@ -66,3 +66,59 @@ export async function GET(request: NextRequest) {
     );
   }
 }
+
+export async function PUT(request: NextRequest) {
+  try {
+    const user = await verifyToken(request);
+    if (!user || !isAdmin(user.role)) {
+      return NextResponse.json({ error: "Non autorisé." }, { status: 403 });
+    }
+
+    const body = await request.json();
+    const id = body.id;
+    if (!id) {
+      return NextResponse.json({ error: "Missing id" }, { status: 400 });
+    }
+
+    const data: any = {};
+    // Only copy fields that exist in the body (simple permissive update)
+    const updatable = [
+      "title",
+      "referenceNumber",
+      "contractType",
+      "vacanciesCount",
+      "location",
+      "duration",
+      "recruitmentType",
+      "startDate",
+      "organizationDescription",
+      "projectDescription",
+      "positionObjective",
+      "responsibilities",
+      "requirements",
+      "applicationDocuments",
+      "submissionDeadline",
+      "submissionEmail",
+      "emailSubjectFormat",
+      "pdfUrl",
+    ];
+
+    for (const key of updatable) {
+      if (body[key] !== undefined) {
+        data[key] = body[key];
+      }
+    }
+
+    if (data.submissionDeadline) data.submissionDeadline = new Date(data.submissionDeadline);
+
+    const updated = await prisma.jobOffer.update({ where: { id }, data });
+
+    return NextResponse.json({ offer: updated });
+  } catch (error) {
+    console.error("Error updating offer:", error);
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : "Erreur" },
+      { status: 500 }
+    );
+  }
+}

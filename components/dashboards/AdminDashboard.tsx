@@ -101,17 +101,17 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ user }) => {
           </h2>
           <div className="space-y-2 sm:space-y-3">
             <Link
-              href="/offers"
+              href="/admin/offers"
               className="block w-full text-center py-2 px-3 sm:px-4 text-sm sm:text-base bg-green-600 text-white rounded-md hover:bg-green-700 transition"
             >
               Toutes les Offres
             </Link>
-            <Link
-              href="/offers/create"
-              className="block w-full text-center py-2 px-3 sm:px-4 text-sm sm:text-base bg-green-500 text-white rounded-md hover:bg-green-600 transition"
-            >
-              Créer une Offre
-            </Link>
+                <Link
+                  href="/offers/create"
+                  className="block w-full text-center py-2 px-3 sm:px-4 text-sm sm:text-base bg-green-500 text-white rounded-md hover:bg-green-600 transition"
+                >
+                  Créer une Offre
+                </Link>
           </div>
         </div>
 
