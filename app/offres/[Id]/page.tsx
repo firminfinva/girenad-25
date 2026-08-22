@@ -119,14 +119,14 @@ const JobOfferPage = () => {
         </p>
       </section>
 
-      {((jobOffer.applicationDocuments && jobOffer.applicationDocuments.length > 0) || typeof jobOffer.applicationDocuments === 'string') && (
+      {(("applicationDocuments" in jobOffer && (jobOffer as any).applicationDocuments && (Array.isArray((jobOffer as any).applicationDocuments) ? (jobOffer as any).applicationDocuments.length > 0 : String((jobOffer as any).applicationDocuments).trim() !== "")) || typeof (jobOffer as any).applicationDocuments === 'string') && (
         <section className="mb-6">
           <h2 className="text-xl font-semibold text-gray-800">Documents de candidature</h2>
           <ul className="list-disc pl-5 mt-2 text-gray-600">
-            {(Array.isArray(jobOffer.applicationDocuments)
-              ? jobOffer.applicationDocuments
-              : String(jobOffer.applicationDocuments).split(/\n+/).map(s => s.trim()).filter(Boolean)
-            ).map((doc, index) => (
+            {(Array.isArray((jobOffer as any).applicationDocuments)
+              ? (jobOffer as any).applicationDocuments
+              : String((jobOffer as any).applicationDocuments).split(/\n+/).map((s: string) => s.trim()).filter(Boolean)
+            ).map((doc: string, index: number) => (
               <li key={index}>{doc}</li>
             ))}
           </ul>
@@ -140,11 +140,11 @@ const JobOfferPage = () => {
         </p>
       </section>
 
-      {jobOffer.pdfUrl && (
+      {("pdfUrl" in jobOffer && (jobOffer as any).pdfUrl) && (
         <section className="mb-6">
           <h2 className="text-xl font-semibold text-gray-800">Télécharger le PDF</h2>
           <div className="mt-2 p-4 border rounded bg-gray-50 text-center">
-            <a href={jobOffer.pdfUrl} target="_blank" rel="noopener noreferrer" download className="px-4 py-2 bg-blue-600 text-white rounded inline-block">
+            <a href={(jobOffer as any).pdfUrl} target="_blank" rel="noopener noreferrer" download className="px-4 py-2 bg-blue-600 text-white rounded inline-block">
               Télécharger le PDF
             </a>
           </div>
