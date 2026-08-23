@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic"; // ensure page fetches live data on every request in production
 import prisma from "@/lib/prisma";
 import Link from "next/link";
 import styles from "@styles/JobOffers.module.css";
