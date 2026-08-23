@@ -140,16 +140,7 @@ const JobOfferPage = () => {
         </p>
       </section>
 
-      {("pdfUrl" in jobOffer && (jobOffer as any).pdfUrl) && (
-        <section className="mb-6">
-          <h2 className="text-xl font-semibold text-gray-800">Télécharger le PDF</h2>
-          <div className="mt-2 p-4 border rounded bg-gray-50 text-center">
-            <a href={(jobOffer as any).pdfUrl} target="_blank" rel="noopener noreferrer" download className="px-4 py-2 bg-blue-600 text-white rounded inline-block">
-              Télécharger le PDF
-            </a>
-          </div>
-        </section>
-      )}
+      {/* Public detail page: no direct download button shown here by design */}
 
       <footer className="text-center mt-6 text-gray-500">
         <p>

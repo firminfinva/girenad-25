@@ -11,6 +11,7 @@ interface Offer {
   title: string;
   submissionDeadline?: string | null;
   pdfUrl?: string | null;
+  downloadCount?: number | null;
 }
 
 const AdminOffersPage: React.FC = () => {
@@ -58,9 +59,14 @@ const AdminOffersPage: React.FC = () => {
             <div className="bg-white rounded-xl shadow-2xl p-6 sm:p-8 w-full overflow-hidden">
               <div className="flex items-center justify-between mb-6">
                 <h1 className="text-3xl font-bold text-gray-900">Gestion des Offres</h1>
-                <Link href="/admin/offers/create" className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition">
-                  + Créer une Offre
-                </Link>
+                <div className="flex gap-3">
+                  <Link href="/offers" className="bg-gray-200 text-gray-800 px-3 py-2 rounded-md hover:bg-gray-300 transition">
+                    Voir la liste publique
+                  </Link>
+                  <Link href="/offers/create" className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition">
+                    + Créer une Offre
+                  </Link>
+                </div>
               </div>
 
               {error && (
@@ -76,6 +82,7 @@ const AdminOffersPage: React.FC = () => {
                       <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Titre</th>
                       <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date limite</th>
                       <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">PDF</th>
+                      <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Téléchargements</th>
                       <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                     </tr>
                   </thead>
@@ -90,16 +97,18 @@ const AdminOffersPage: React.FC = () => {
                         </td>
                         <td className="px-3 py-4 text-sm text-gray-500">
                           {offer.pdfUrl ? (
-                            <a href={offer.pdfUrl} target="_blank" rel="noopener noreferrer" download className="text-sm px-2 py-1 border rounded">
+                            <a href={`/api/offers/download?id=${encodeURIComponent(offer.id)}`} target="_blank" rel="noopener noreferrer" className="text-sm px-2 py-1 border rounded">
                               Télécharger
                             </a>
                           ) : (
                             "-"
                           )}
                         </td>
+                        <td className="px-3 py-4 text-sm text-gray-500">{offer.downloadCount ?? 0}</td>
                         <td className="px-3 py-4 text-sm font-medium">
                           <div className="flex gap-3">
                             <Link href={`/admin/offers/${offer.id}`} className="text-blue-600">Modifier</Link>
+                            <a href={`/offers/${offer.id}`} target="_blank" rel="noopener noreferrer" className="text-gray-700">Voir public</a>
                           </div>
                         </td>
                       </tr>

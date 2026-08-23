@@ -93,10 +93,9 @@ export default async function OfferDetail({ params }: Props) {
           <p className="mt-2 text-sm text-blue-800">Pour plus de détails, téléchargez le PDF officiel de cette offre.</p>
           <div className="mt-4">
             <a
-              href={offer.pdfUrl}
+              href={`/api/offers/download?id=${encodeURIComponent(offer.id)}`}
               target="_blank"
               rel="noreferrer"
-              download
               className="inline-block px-4 py-3 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
             >
               Télécharger le PDF de l'offre

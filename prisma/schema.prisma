@@ -393,6 +393,7 @@ model JobOffer {
   submissionEmail          String?
   emailSubjectFormat       String?
   pdfUrl                   String?
+  downloadCount            Int      @default(0)
 
   @@map("job_offers")
 }

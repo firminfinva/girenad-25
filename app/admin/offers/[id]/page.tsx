@@ -18,6 +18,12 @@ export default function AdminEditOfferPage() {
 
   useEffect(() => {
     if (!id) return;
+    // If route was accidentally called with 'create' as id (e.g. /admin/offers/create),
+    // redirect to the canonical create page which is protected for admins.
+    if (id === "create") {
+      router.push("/offers/create");
+      return;
+    }
     const fetchOffer = async () => {
       setLoadingOffer(true);
       try {

@@ -22,25 +22,9 @@ export default async function JobOffersPage() {
         {offers.length > 0 ? (
           offers.map((offer) => (
             <div key={offer.id} className={styles.offerCard}>
-              <div className="flex items-center justify-between">
-                <Link href={`/offers/${offer.id}`}>
-                  <h2 className={styles.cardTitle}>{offer.title}</h2>
-                </Link>
-                <div className="flex gap-2">
-                  {offer.pdfUrl && (
-                    <a
-                      href={offer.pdfUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      download
-                      className="px-2 py-1 border rounded text-sm"
-                    >
-                      Télécharger PDF
-                    </a>
-                  )}
-                </div>
-              </div>
-
+              <Link href={`/offers/${offer.id}`}>
+                <h2 className={styles.cardTitle}>{offer.title}</h2>
+              </Link>
               <p className={styles.cardExpiry}>
                 <strong>Date d'expiration:</strong>{" "}
                 {offer.submissionDeadline
@@ -50,7 +34,7 @@ export default async function JobOffersPage() {
             </div>
           ))
         ) : (
-          <p>Aucune offre disponible pour le moment.</p>
+          <p>Aucune offre disponible pour le moment.Merci</p>
         )}
       </div>
     </div>
