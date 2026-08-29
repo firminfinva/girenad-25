@@ -14,7 +14,7 @@ interface JobOffersProps {
   offers: JobOffer[];
 }
 
-const JobOffers: React.FC<JobOffersProps> = ({ offers }) => {
+const JobOffers: React.FC<JobOffersProps> = ({ offers = [] }) => {
   const [filter, setFilter] = useState<"all" | "new" | "expired">("all");
   const [filteredOffers, setFilteredOffers] = useState<JobOffer[]>([]);
 
@@ -29,7 +29,7 @@ const JobOffers: React.FC<JobOffersProps> = ({ offers }) => {
         offers.filter((offer) => new Date(offer.expiryDate) <= currentDate)
       );
     } else {
-      setFilteredOffers(offers);
+        setFilteredOffers(offers || []);
     }
   }, [filter, offers]);
 

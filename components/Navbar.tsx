@@ -46,7 +46,7 @@ const Navbar: React.FC = () => {
         <Image src={thelogo} alt="girenad" width={160} height={64} />
       </a>
       <ul className="list-none sm:flex hidden justify-end items-center flex-1">
-        {navLinks.map((nav, index) => {
+        {navLinks?.map((nav, index) => {
           if (nav.id === "cv-organisationnel" && !hasCvProjects) return null;
           return (
             <li
@@ -115,8 +115,8 @@ const Navbar: React.FC = () => {
           className={`${toggle ? "flex" : "hidden"}
             p-6 bg-white absolute top-20 ring-0 my-[0.6rem] w-full rounded-xl sidebar`}
         >
-          <ul className="list-none flex flex-col justify-end px-[50px] items-left flex-1">
-            {navLinks.map((nav, index) => {
+            <ul className="list-none flex flex-col justify-end px-[50px] items-left flex-1">
+            {navLinks?.map((nav, index) => {
               if (nav.id === "cv-organisationnel" && !hasCvProjects) return null;
               return (
                 <li

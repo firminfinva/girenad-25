@@ -11,7 +11,7 @@ const FeaturesCard: React.FC<FeatredCardProps> = ({
   index,
 }) => (
   <div
-    className={`flex flex-row p-6 rounded-[20px] ${index !== features.length - 1 ? "mb-6" : "mb-0"
+    className={`flex flex-row p-6 rounded-[20px] ${index !== (features?.length ?? 0) - 1 ? "mb-6" : "mb-0"
       } feature-card`}
   >
     <div
@@ -50,10 +50,10 @@ const Business: React.FC = () => (
         </p>
       </div>
       <div className={`${layout.sectionImg} flex-col`}>
-        {features.map((feature, index) => (
-          <FeaturesCard key={feature.id} {...feature} index={index} />
-        ))}
-      </div>
+            {features?.map((feature, index) => (
+              <FeaturesCard key={feature.id} {...feature} index={index} />
+            ))}
+          </div>
     </div>
   </section>
 );

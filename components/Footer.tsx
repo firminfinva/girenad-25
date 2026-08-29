@@ -19,7 +19,7 @@ const Footer: React.FC = () => (
         </p>
         <br />
         <div className="flex flex-row md:mt-0 mt-6">
-          {socialMedia.map((social, index) => (
+          {socialMedia?.map((social, index) => (
             <Image
               src={social.icon}
               key={social.id}
@@ -33,7 +33,7 @@ const Footer: React.FC = () => (
       </div>
 
       <div className="flex-[1.5] w-full flex flex-row justify-between flex-wrap md:mt-0 mt-10">
-        {footerLinks.map((footerLink) => (
+        {footerLinks?.map((footerLink) => (
           <div
             key={footerLink.id}
             className="flex flex-col ss:my-0 my-4 min-w-[150px]"
@@ -44,7 +44,7 @@ const Footer: React.FC = () => (
               {footerLink.title}
             </h4>
             <ul className="list-none mt-4">
-              {footerLink.links.map((link, index) => (
+              {footerLink.links?.map((link, index) => (
                 <li
                   key={link.name}
                   className={`font-poppins font-normal text-[12px] leading-[15px] text-black hover:text-secondary cursor-pointer ${
