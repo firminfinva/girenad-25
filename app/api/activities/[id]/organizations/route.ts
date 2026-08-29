@@ -5,9 +5,11 @@ import prisma from "@/lib/prisma";
 // GET - Get all organizations for an activity
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: any
 ) {
   try {
+    const _paramsCandidate = context?.params;
+    const params = _paramsCandidate && typeof (_paramsCandidate as any).then === "function" ? await _paramsCandidate : _paramsCandidate;
     const organizations = await prisma.activityOrganization.findMany({
       where: { activityId: params.id },
       orderBy: { order: "asc" },
@@ -26,9 +28,11 @@ export async function GET(
 // PUT - Update all organizations for an activity
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: any
 ) {
   try {
+    const _paramsCandidate = context?.params;
+    const params = _paramsCandidate && typeof (_paramsCandidate as any).then === "function" ? await _paramsCandidate : _paramsCandidate;
     const user = await verifyToken(request);
     if (!user || !isAdminOrModerator(user.role)) {
       return NextResponse.json(
