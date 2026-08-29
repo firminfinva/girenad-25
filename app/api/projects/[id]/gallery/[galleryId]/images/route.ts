@@ -5,12 +5,13 @@ import prisma from "@/lib/prisma";
 // GET - Get all images for a gallery
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string; galleryId: string } }
+  { params }: { params: Promise<{ id: string; galleryId: string }> }
 ) {
   try {
+    const { id, galleryId } = await params;
     const images = await prisma.galleryImage.findMany({
       where: {
-        galleryId: params.galleryId,
+        galleryId: galleryId,
       },
       orderBy: {
         order: "asc",
@@ -30,9 +31,10 @@ export async function GET(
 // POST - Add an image to a gallery
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string; galleryId: string } }
+  { params }: { params: Promise<{ id: string; galleryId: string }> }
 ) {
   try {
+    const { id, galleryId } = await params;
     const user = await verifyToken(request);
     if (!user || !isAdminOrModerator(user.role)) {
       return NextResponse.json(
@@ -43,7 +45,7 @@ export async function POST(
 
     // Verify gallery belongs to project
     const gallery = await prisma.gallery.findUnique({
-      where: { id: params.galleryId },
+      where: { id: galleryId },
       include: {
         images: true,
       },
@@ -56,7 +58,7 @@ export async function POST(
       );
     }
 
-    if (gallery.projectId !== params.id) {
+    if (gallery.projectId !== id) {
       return NextResponse.json(
         { error: "Cette galerie n'appartient pas à ce projet" },
         { status: 403 }
@@ -84,7 +86,7 @@ export async function POST(
     // Get the highest order number for images in this gallery
     const maxImageOrder = await prisma.galleryImage.findFirst({
       where: {
-        galleryId: params.galleryId,
+        galleryId: galleryId,
       },
       orderBy: { order: "desc" },
       select: { order: true },
@@ -96,7 +98,7 @@ export async function POST(
         imageUrl,
         altText: altText || null,
         order: maxImageOrder ? maxImageOrder.order + 1 : 0,
-        galleryId: params.galleryId,
+        galleryId: galleryId,
       },
     });
 

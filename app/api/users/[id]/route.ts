@@ -5,9 +5,10 @@ import prisma from "@/lib/prisma";
 // GET - Get a specific user
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const user = await verifyToken(request);
     if (!user || !isAdmin(user.role)) {
       return NextResponse.json(
@@ -17,7 +18,7 @@ export async function GET(
     }
 
     const targetUser = await prisma.user.findUnique({
-      where: { id: params.id },
+      where: { id: id },
       select: {
         id: true,
         firstName: true,
@@ -52,9 +53,10 @@ export async function GET(
 // PATCH - Update a user
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const user = await verifyToken(request);
     if (!user || !isAdmin(user.role)) {
       return NextResponse.json(
@@ -69,7 +71,7 @@ export async function PATCH(
 
     // Check if user exists
     const targetUser = await prisma.user.findUnique({
-      where: { id: params.id },
+      where: { id: id },
     });
 
     if (!targetUser) {
@@ -80,7 +82,7 @@ export async function PATCH(
     }
 
     // Prevent admins from invalidating or downgrading themselves
-    if (user.userId === params.id) {
+    if (user.userId === id) {
       // Prevent invalidating yourself
       if (validated !== undefined && validated === false) {
         return NextResponse.json(
@@ -118,7 +120,7 @@ export async function PATCH(
     }
 
     const updatedUser = await prisma.user.update({
-      where: { id: params.id },
+      where: { id: id },
       data: {
         ...(role !== undefined && { role }),
         ...(validated !== undefined && { validated }),
@@ -155,9 +157,10 @@ export async function PATCH(
 // DELETE - Delete a user
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const user = await verifyToken(request);
     if (!user || !isAdmin(user.role)) {
       return NextResponse.json(
@@ -167,7 +170,7 @@ export async function DELETE(
     }
 
     // Prevent deleting yourself
-    if (user.userId === params.id) {
+    if (user.userId === id) {
       return NextResponse.json(
         { error: "Vous ne pouvez pas supprimer votre propre compte" },
         { status: 400 }
@@ -175,7 +178,7 @@ export async function DELETE(
     }
 
     const targetUser = await prisma.user.findUnique({
-      where: { id: params.id },
+      where: { id: id },
     });
 
     if (!targetUser) {
@@ -186,7 +189,7 @@ export async function DELETE(
     }
 
     await prisma.user.delete({
-      where: { id: params.id },
+      where: { id: id },
     });
 
     return NextResponse.json({ message: "Utilisateur supprimé avec succès" });

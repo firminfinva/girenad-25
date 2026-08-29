@@ -5,9 +5,10 @@ import prisma from "@/lib/prisma";
 // DELETE - Delete a gallery (activite) and all its images
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string; galleryId: string } }
+  { params }: { params: Promise<{ id: string; galleryId: string }> }
 ) {
   try {
+    const { id, galleryId } = await params;
     const user = await verifyToken(request);
     if (!user || !isAdminOrModerator(user.role)) {
       return NextResponse.json(
@@ -18,7 +19,7 @@ export async function DELETE(
 
     // Verify the gallery belongs to the project
     const gallery = await prisma.gallery.findUnique({
-      where: { id: params.galleryId },
+      where: { id: galleryId },
     });
 
     if (!gallery) {
@@ -28,7 +29,7 @@ export async function DELETE(
       );
     }
 
-    if (gallery.projectId !== params.id) {
+    if (gallery.projectId !== id) {
       return NextResponse.json(
         { error: "Cette galerie n'appartient pas à ce projet" },
         { status: 403 }
@@ -37,7 +38,7 @@ export async function DELETE(
 
     // Delete gallery (cascade will delete all images)
     await prisma.gallery.delete({
-      where: { id: params.galleryId },
+      where: { id: galleryId },
     });
 
     return NextResponse.json({ message: "Galerie supprimée avec succès" });
@@ -53,9 +54,10 @@ export async function DELETE(
 // PATCH - Update a gallery (activite)
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string; galleryId: string } }
+  { params }: { params: Promise<{ id: string; galleryId: string }> }
 ) {
   try {
+    const { id, galleryId } = await params;
     const user = await verifyToken(request);
     if (!user || !isAdminOrModerator(user.role)) {
       return NextResponse.json(
@@ -66,7 +68,7 @@ export async function PATCH(
 
     // Verify the gallery belongs to the project
     const gallery = await prisma.gallery.findUnique({
-      where: { id: params.galleryId },
+      where: { id: galleryId },
     });
 
     if (!gallery) {
@@ -76,7 +78,7 @@ export async function PATCH(
       );
     }
 
-    if (gallery.projectId !== params.id) {
+    if (gallery.projectId !== id) {
       return NextResponse.json(
         { error: "Cette galerie n'appartient pas à ce projet" },
         { status: 403 }
@@ -87,7 +89,7 @@ export async function PATCH(
     const { title, description, order } = body;
 
     const updated = await prisma.gallery.update({
-      where: { id: params.galleryId },
+      where: { id: galleryId },
       data: {
         ...(title !== undefined && { title: title || null }),
         ...(description !== undefined && { description: description || null }),

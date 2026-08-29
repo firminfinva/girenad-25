@@ -5,11 +5,12 @@ import prisma from "@/lib/prisma";
 // GET - Get a single activity
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const activity = await prisma.activity.findUnique({
-      where: { id: params.id },
+      where: { id: id },
       include: {
         creator: {
           select: {
@@ -70,9 +71,10 @@ export async function GET(
 // PATCH - Update an activity
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const user = await verifyToken(request);
     if (!user || !isAdminOrModerator(user.role)) {
       return NextResponse.json(
@@ -95,7 +97,7 @@ export async function PATCH(
     if (projectId !== undefined) updateData.projectId = projectId;
 
     const activity = await prisma.activity.update({
-      where: { id: params.id },
+      where: { id: id },
       data: updateData,
       include: {
         creator: {
@@ -128,9 +130,10 @@ export async function PATCH(
 // DELETE - Delete an activity
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const user = await verifyToken(request);
     if (!user || !isAdminOrModerator(user.role)) {
       return NextResponse.json(
@@ -140,7 +143,7 @@ export async function DELETE(
     }
 
     await prisma.activity.delete({
-      where: { id: params.id },
+      where: { id: id },
     });
 
     return NextResponse.json({ message: "Activité supprimée avec succès" });

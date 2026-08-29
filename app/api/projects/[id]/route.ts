@@ -5,12 +5,13 @@ import prisma from "@/lib/prisma";
 // GET - Get a single project by ID
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     // Find project by database ID
     const project = await prisma.project.findUnique({
-      where: { id: params.id },
+      where: { id: id },
       include: {
         creator: {
           select: {
@@ -73,9 +74,10 @@ export async function GET(
 // PATCH - Update a project
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const user = await verifyToken(request);
     if (!user || !isAdminOrModerator(user.role)) {
       return NextResponse.json(
@@ -111,7 +113,7 @@ export async function PATCH(
     const project = await prisma.$transaction(async (tx: any) => {
       // Update project basic info
       const updatedProject = await tx.project.update({
-        where: { id: params.id },
+        where: { id: id },
         data: {
           ...(title && { title }),
           ...(overview && { overview }),
@@ -135,13 +137,13 @@ export async function PATCH(
       if (specificObjectives !== undefined) {
         // Delete existing and create new
         await tx.specificObjective.deleteMany({
-          where: { projectId: params.id },
+          where: { projectId: id },
         });
         if (specificObjectives.length > 0) {
           await tx.specificObjective.createMany({
             data: specificObjectives.map(
               (obj: { content: string; order: number }, index: number) => ({
-                projectId: params.id,
+                projectId: id,
                 content: obj.content,
                 order: obj.order !== undefined ? obj.order : index + 1,
               })
@@ -152,13 +154,13 @@ export async function PATCH(
 
       if (mainActivities !== undefined) {
         await tx.mainActivity.deleteMany({
-          where: { projectId: params.id },
+          where: { projectId: id },
         });
         if (mainActivities.length > 0) {
           await tx.mainActivity.createMany({
             data: mainActivities.map(
               (act: { content: string; order: number }, index: number) => ({
-                projectId: params.id,
+                projectId: id,
                 content: act.content,
                 order: act.order !== undefined ? act.order : index + 1,
               })
@@ -169,12 +171,12 @@ export async function PATCH(
 
       if (partners !== undefined) {
         await tx.partner.deleteMany({
-          where: { projectId: params.id },
+          where: { projectId: id },
         });
         if (partners.length > 0) {
           await tx.partner.createMany({
             data: partners.map((partner: { name: string; type: string }) => ({
-              projectId: params.id,
+              projectId: id,
               name: partner.name,
               type: partner.type as any,
             })),
@@ -184,13 +186,13 @@ export async function PATCH(
 
       if (expectedResults !== undefined) {
         await tx.expectedResult.deleteMany({
-          where: { projectId: params.id },
+          where: { projectId: id },
         });
         if (expectedResults.length > 0) {
           await tx.expectedResult.createMany({
             data: expectedResults.map(
               (result: { content: string; order: number }, index: number) => ({
-                projectId: params.id,
+                projectId: id,
                 content: result.content,
                 order: result.order !== undefined ? result.order : index + 1,
               })
@@ -201,7 +203,7 @@ export async function PATCH(
 
       // Return project with all relations
       return await tx.project.findUnique({
-        where: { id: params.id },
+        where: { id: id },
         include: {
           creator: {
             select: {
@@ -237,9 +239,10 @@ export async function PATCH(
 // DELETE - Delete a project
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const user = await verifyToken(request);
     if (!user || !isAdminOrModerator(user.role)) {
       return NextResponse.json(
@@ -249,7 +252,7 @@ export async function DELETE(
     }
 
     await prisma.project.delete({
-      where: { id: params.id },
+      where: { id: id },
     });
 
     return NextResponse.json({ message: "Projet supprimé avec succès" });

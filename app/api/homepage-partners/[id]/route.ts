@@ -5,11 +5,12 @@ import prisma from "@/lib/prisma";
 // GET - Get a single homepage partner
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const partner = await prisma.homepagePartner.findUnique({
-      where: { id: params.id },
+      where: { id: id },
     });
 
     if (!partner) {
@@ -32,9 +33,10 @@ export async function GET(
 // PATCH - Update a homepage partner
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const user = await verifyToken(request);
     if (!user || !isAdminOrModerator(user.role)) {
       return NextResponse.json(
@@ -47,7 +49,7 @@ export async function PATCH(
     const { name, logo, website, description, order, active } = body;
 
     const partner = await prisma.homepagePartner.update({
-      where: { id: params.id },
+      where: { id: id },
       data: {
         ...(name !== undefined && { name }),
         ...(logo !== undefined && { logo: logo || null }),
@@ -71,9 +73,10 @@ export async function PATCH(
 // DELETE - Delete a homepage partner
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const user = await verifyToken(request);
     if (!user || !isAdminOrModerator(user.role)) {
       return NextResponse.json(
@@ -83,7 +86,7 @@ export async function DELETE(
     }
 
     await prisma.homepagePartner.delete({
-      where: { id: params.id },
+      where: { id: id },
     });
 
     return NextResponse.json({ message: "Partenaire supprimé avec succès" });

@@ -5,13 +5,12 @@ import prisma from "@/lib/prisma";
 // GET - Get all organizations for an activity
 export async function GET(
   request: NextRequest,
-  context: any
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const _paramsCandidate = context?.params;
-    const params = _paramsCandidate && typeof (_paramsCandidate as any).then === "function" ? await _paramsCandidate : _paramsCandidate;
+    const { id } = await params;
     const organizations = await prisma.activityOrganization.findMany({
-      where: { activityId: params.id },
+      where: { activityId: id },
       orderBy: { order: "asc" },
     });
 
@@ -28,11 +27,10 @@ export async function GET(
 // PUT - Update all organizations for an activity
 export async function PUT(
   request: NextRequest,
-  context: any
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const _paramsCandidate = context?.params;
-    const params = _paramsCandidate && typeof (_paramsCandidate as any).then === "function" ? await _paramsCandidate : _paramsCandidate;
+    const { id } = await params;
     const user = await verifyToken(request);
     if (!user || !isAdminOrModerator(user.role)) {
       return NextResponse.json(
@@ -45,7 +43,7 @@ export async function PUT(
 
     // Delete existing organizations
     await prisma.activityOrganization.deleteMany({
-      where: { activityId: params.id },
+      where: { activityId: id },
     });
 
     // Create new organizations
@@ -56,7 +54,7 @@ export async function PUT(
             data: {
               name: org.name,
               order: org.order,
-              activityId: params.id,
+              activityId: id,
             },
           })
       )

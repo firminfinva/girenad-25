@@ -5,9 +5,10 @@ import prisma from "@/lib/prisma";
 // PATCH - Update a featured image
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string; imageId: string } }
+  { params }: { params: Promise<{ id: string; imageId: string }> }
 ) {
   try {
+    const { id, imageId } = await params;
     const user = await verifyToken(request);
     if (!user || !isAdminOrModerator(user.role)) {
       return NextResponse.json(
@@ -20,7 +21,7 @@ export async function PATCH(
     const { imageUrl, altText, order } = body;
 
     const featuredImage = await prisma.projectFeaturedImage.update({
-      where: { id: params.imageId },
+      where: { id: imageId },
       data: {
         ...(imageUrl && { imageUrl }),
         ...(altText !== undefined && { altText }),
@@ -41,9 +42,10 @@ export async function PATCH(
 // DELETE - Delete a featured image
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string; imageId: string } }
+  { params }: { params: Promise<{ id: string; imageId: string }> }
 ) {
   try {
+    const { id, imageId } = await params;
     const user = await verifyToken(request);
     if (!user || !isAdminOrModerator(user.role)) {
       return NextResponse.json(
@@ -53,7 +55,7 @@ export async function DELETE(
     }
 
     await prisma.projectFeaturedImage.delete({
-      where: { id: params.imageId },
+      where: { id: imageId },
     });
 
     return NextResponse.json({ message: "Photo phare supprimée avec succès" });

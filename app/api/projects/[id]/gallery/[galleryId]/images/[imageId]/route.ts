@@ -5,9 +5,10 @@ import prisma from "@/lib/prisma";
 // DELETE - Delete a gallery image
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string; galleryId: string; imageId: string } }
+  { params }: { params: Promise<{ id: string; galleryId: string; imageId: string }> }
 ) {
   try {
+    const { id, galleryId, imageId } = await params;
     const user = await verifyToken(request);
     if (!user || !isAdminOrModerator(user.role)) {
       return NextResponse.json(
@@ -18,7 +19,7 @@ export async function DELETE(
 
     // Verify the image belongs to the gallery and project
     const image = await prisma.galleryImage.findUnique({
-      where: { id: params.imageId },
+      where: { id: imageId },
       include: {
         gallery: true,
       },
@@ -28,14 +29,14 @@ export async function DELETE(
       return NextResponse.json({ error: "Image non trouvée" }, { status: 404 });
     }
 
-    if (image.gallery.id !== params.galleryId) {
+    if (image.gallery.id !== galleryId) {
       return NextResponse.json(
         { error: "Cette image n'appartient pas à cette galerie" },
         { status: 403 }
       );
     }
 
-    if (image.gallery.projectId !== params.id) {
+    if (image.gallery.projectId !== id) {
       return NextResponse.json(
         { error: "Cette image n'appartient pas à ce projet" },
         { status: 403 }
@@ -43,7 +44,7 @@ export async function DELETE(
     }
 
     await prisma.galleryImage.delete({
-      where: { id: params.imageId },
+      where: { id: imageId },
     });
 
     return NextResponse.json({ message: "Image supprimée avec succès" });

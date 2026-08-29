@@ -5,9 +5,10 @@ import prisma from "@/lib/prisma";
 // PATCH - Update a user's role (accessible to USER role)
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const user = await verifyToken(request);
     if (!user) {
       return NextResponse.json(
@@ -37,7 +38,7 @@ export async function PATCH(
 
     // Check if user exists
     const targetUser = await prisma.user.findUnique({
-      where: { id: params.id },
+      where: { id: id },
     });
 
     if (!targetUser) {
@@ -48,7 +49,7 @@ export async function PATCH(
     }
 
     const updatedUser = await prisma.user.update({
-      where: { id: params.id },
+      where: { id: id },
       data: {
         role: role as any,
       },

@@ -5,11 +5,12 @@ import prisma from "@/lib/prisma";
 // GET - Get all featured images for a project
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const featuredImages = await prisma.projectFeaturedImage.findMany({
-      where: { projectId: params.id },
+      where: { projectId: id },
       orderBy: {
         order: "asc",
       },
@@ -28,9 +29,10 @@ export async function GET(
 // POST - Create a new featured image
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const user = await verifyToken(request);
     if (!user || !isAdminOrModerator(user.role)) {
       return NextResponse.json(
@@ -51,7 +53,7 @@ export async function POST(
 
     // Verify project exists
     const project = await prisma.project.findUnique({
-      where: { id: params.id },
+      where: { id: id },
     });
 
     if (!project) {
@@ -63,14 +65,14 @@ export async function POST(
 
     // Get max order to set default
     const maxOrder = await prisma.projectFeaturedImage.findFirst({
-      where: { projectId: params.id },
+      where: { projectId: id },
       orderBy: { order: "desc" },
       select: { order: true },
     });
 
     const featuredImage = await prisma.projectFeaturedImage.create({
       data: {
-        projectId: params.id,
+        projectId: id,
         imageUrl,
         altText: altText || null,
         order: order !== undefined ? order : (maxOrder?.order || 0) + 1,

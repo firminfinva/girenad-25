@@ -5,12 +5,13 @@ import prisma from "@/lib/prisma";
 // GET - Get all gallery items for a project
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const galleryItems = await prisma.gallery.findMany({
       where: {
-        projectId: params.id,
+        projectId: id,
       },
       include: {
         images: {
@@ -43,9 +44,10 @@ export async function GET(
 // POST - Add a new gallery item to a project
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const user = await verifyToken(request);
     if (!user || !isAdminOrModerator(user.role)) {
       return NextResponse.json(
@@ -56,7 +58,7 @@ export async function POST(
 
     // Verify project exists
     const project = await prisma.project.findUnique({
-      where: { id: params.id },
+      where: { id: id },
     });
 
     if (!project) {
@@ -76,7 +78,7 @@ export async function POST(
     // Get the highest order number for galleries in this project
     const maxOrder = await prisma.gallery.findFirst({
       where: {
-        projectId: params.id,
+        projectId: id,
       },
       orderBy: { order: "desc" },
       select: { order: true },
@@ -88,7 +90,7 @@ export async function POST(
         title: title,
         description: description || null,
         order: maxOrder ? maxOrder.order + 1 : 0,
-        projectId: params.id,
+        projectId: id,
       },
       include: {
         images: {

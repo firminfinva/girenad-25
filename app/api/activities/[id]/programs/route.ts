@@ -5,11 +5,12 @@ import prisma from "@/lib/prisma";
 // GET - Get all programs for an activity
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const programs = await prisma.program.findMany({
-      where: { activityId: params.id },
+      where: { activityId: id },
       orderBy: { order: "asc" },
     });
 
@@ -26,9 +27,10 @@ export async function GET(
 // PUT - Update all programs for an activity
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const user = await verifyToken(request);
     if (!user || !isAdminOrModerator(user.role)) {
       return NextResponse.json(
@@ -41,7 +43,7 @@ export async function PUT(
 
     // Delete existing programs
     await prisma.program.deleteMany({
-      where: { activityId: params.id },
+      where: { activityId: id },
     });
 
     // Create new programs
@@ -52,7 +54,7 @@ export async function PUT(
             time: program.time,
             event: program.event,
             order: program.order,
-            activityId: params.id,
+            activityId: id,
           },
         })
       )

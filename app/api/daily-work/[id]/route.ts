@@ -5,9 +5,10 @@ import prisma from "@/lib/prisma";
 // PATCH - Update daily work (mark as complete/incomplete)
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const user = await verifyToken(request);
     if (!user) {
       return NextResponse.json(
@@ -21,7 +22,7 @@ export async function PATCH(
 
     // Check if daily work exists and belongs to user
     const dailyWork = await prisma.dailyWork.findUnique({
-      where: { id: params.id },
+      where: { id: id },
     });
 
     if (!dailyWork) {
@@ -47,7 +48,7 @@ export async function PATCH(
     if (description !== undefined) updateData.description = description;
 
     const updatedWork = await prisma.dailyWork.update({
-      where: { id: params.id },
+      where: { id: id },
       data: updateData,
     });
 
@@ -64,9 +65,10 @@ export async function PATCH(
 // DELETE - Delete daily work
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const user = await verifyToken(request);
     if (!user) {
       return NextResponse.json(
@@ -77,7 +79,7 @@ export async function DELETE(
 
     // Check if daily work exists and belongs to user
     const dailyWork = await prisma.dailyWork.findUnique({
-      where: { id: params.id },
+      where: { id: id },
     });
 
     if (!dailyWork) {
@@ -95,7 +97,7 @@ export async function DELETE(
     }
 
     await prisma.dailyWork.delete({
-      where: { id: params.id },
+      where: { id: id },
     });
 
     return NextResponse.json({ message: "Travail quotidien supprimé avec succès" });
